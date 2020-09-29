@@ -1,5 +1,5 @@
 ---
-bio: My research interests include distributed robotics, mobile computing and programmable matter.
+bio: My research interests include R, data visualization, machine learning, and survival analysis.
 education:
   courses:
   - course: MPH in Biostatistics & Epidemiology
@@ -11,6 +11,7 @@ education:
 email: "michael.luu@cshs.org"
 interests:
 - R
+- Data Visualization
 - Machine Learning
 - Predictive Modeling
 - Survival Analysis

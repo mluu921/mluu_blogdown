@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Clinical | Michael Luu</title>
+    <link>/tag/clinical/</link>
+      <atom:link href="/tag/clinical/index.xml" rel="self" type="application/rss+xml" />
+    <description>Clinical</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 29 Sep 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Clinical</title>
+      <link>/tag/clinical/</link>
+    </image>
+    
+    <item>
+      <title>CHLA/USC Division of Neonatology Feeding Calculator</title>
+      <link>/project/chla-nicu-feeding-calculator/</link>
+      <pubDate>Tue, 29 Sep 2020 00:00:00 +0000</pubDate>
+      <guid>/project/chla-nicu-feeding-calculator/</guid>
+      <description>&lt;p&gt;A web based online interactive calculator built on top of the R Shiny framework. This web application implements the enteral feeding algorithm developed internally by the quality improvement team of neonatologist and nurses at CHLA by simplifying the necessity for manual calculation, and by providing an interactive environment for custom parameters and report generation. This web application has been implemented and is in currently in clinical use at Children’s Hospital Los Angeles, LAC/USC Medical Center, and Hollywood Presbyterian Medical Center&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
