@@ -31,7 +31,7 @@ social:
   link: https://github.com/mluu921
 - icon: linkedin
   icon_pack: fab
-  link: https://www.linkedin.com/miluu
+  link: https://www.linkedin.com/in/miluu/
 superuser: true
 title: Michael Luu
 user_groups:
