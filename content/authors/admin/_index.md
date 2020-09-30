@@ -17,7 +17,7 @@ interests:
 - Survival Analysis
 organizations:
 - name: Cedars-Sinai Samuel Oschin Comprehensive Cancer Center
-  # url: https://www.stanford.edu/
+  url: https://www.cedars-sinai.org/research/cores/biostatistical-sciences.html
 role: Research Biostatistician II
 social:
 - icon: envelope
