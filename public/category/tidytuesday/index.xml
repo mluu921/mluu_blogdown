@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tidytuesday | Michael Luu</title>
+    <link>/category/tidytuesday/</link>
+      <atom:link href="/category/tidytuesday/index.xml" rel="self" type="application/rss+xml" />
+    <description>tidytuesday</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 02 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>tidytuesday</title>
+      <link>/category/tidytuesday/</link>
+    </image>
+    
+    <item>
+      <title>Natural Language Processing (NLP) and developing a machine learning classifier on Beyonce and Taylor Swift lyrics #TidyTuesday</title>
+      <link>/post/taylor_swift_and_beyonce/</link>
+      <pubDate>Fri, 02 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/post/taylor_swift_and_beyonce/</guid>
+      <description>&lt;p&gt;Let&amp;rsquo;s start off by loading the data from the tidytuesday github repository.&lt;/p&gt;
+&lt;h1 id=&#34;reading-in-data&#34;&gt;Reading in data&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;beyonce_lyrics &amp;lt;-
+  readr::read_csv(
+    &#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv&#39;
+  ) %&amp;gt;%
+  janitor::clean_names()
+
+taylor_swift_lyrics &amp;lt;-
+  readr::read_csv(
+    &#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/taylor_swift_lyrics.csv&#39;
+  )  %&amp;gt;%
+  janitor::clean_names()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;data-pre-processing-and-feature-engineering&#34;&gt;Data pre-processing and feature engineering&lt;/h1&gt;
+&lt;p&gt;It appears the &lt;strong&gt;beyonce_lyrics&lt;/strong&gt; and the &lt;strong&gt;taylor_swift_lyrics&lt;/strong&gt; are the pertinent data sets for building our machine learning classifier. Let&amp;rsquo;s have a closer look at the two datasets.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;beyonce_lyrics 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 22,616 x 6
+##    line                        song_id song_name artist_id artist_name song_line
+##    &amp;lt;chr&amp;gt;                         &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;         &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt;
+##  1 If I ain&#39;t got nothing, I ~   50396 1+1             498 Beyoncé             1
+##  2 If I ain&#39;t got something, ~   50396 1+1             498 Beyoncé             2
+##  3 &#39;Cause I got it with you      50396 1+1             498 Beyoncé             3
+##  4 I don&#39;t know much about al~   50396 1+1             498 Beyoncé             4
+##  5 And it&#39;s me and you           50396 1+1             498 Beyoncé             5
+##  6 That&#39;s all we&#39;ll have when~   50396 1+1             498 Beyoncé             6
+##  7 &#39;Cause baby, we ain&#39;t got ~   50396 1+1             498 Beyoncé             7
+##  8 Darling, you got enough fo~   50396 1+1             498 Beyoncé             8
+##  9 So come on, baby, make lov~   50396 1+1             498 Beyoncé             9
+## 10 When my days look low         50396 1+1             498 Beyoncé            10
+## # ... with 22,606 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;glimpse(beyonce_lyrics)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 22,616
+## Columns: 6
+## $ line        &amp;lt;chr&amp;gt; &amp;quot;If I ain&#39;t got nothing, I got you&amp;quot;, &amp;quot;If I ain&#39;t got so...
+## $ song_id     &amp;lt;dbl&amp;gt; 50396, 50396, 50396, 50396, 50396, 50396, 50396, 50396,...
+## $ song_name   &amp;lt;chr&amp;gt; &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;, &amp;quot;1+1&amp;quot;,...
+## $ artist_id   &amp;lt;dbl&amp;gt; 498, 498, 498, 498, 498, 498, 498, 498, 498, 498, 498, ...
+## $ artist_name &amp;lt;chr&amp;gt; &amp;quot;Beyoncé&amp;quot;, &amp;quot;Beyoncé&amp;quot;, &amp;quot;Beyoncé&amp;quot;, &amp;quot;Beyoncé&amp;quot;, &amp;quot;Beyoncé&amp;quot;, ...
+## $ song_line   &amp;lt;dbl&amp;gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;taylor_swift_lyrics
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 132 x 4
+##    artist    album     title           lyrics                                   
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;                                    
+##  1 Taylor S~ Taylor S~ Tim McGraw      &amp;quot;He said the way my blue eyes shinx\nPut~
+##  2 Taylor S~ Taylor S~ Picture to Burn &amp;quot;State the obvious, I didn&#39;t get my perf~
+##  3 Taylor S~ Taylor S~ Teardrops on m~ &amp;quot;Drew looks at me,\nI fake a smile so he~
+##  4 Taylor S~ Taylor S~ A Place in Thi~ &amp;quot;I don&#39;t know what I want, so don&#39;t ask ~
+##  5 Taylor S~ Taylor S~ Cold As You     &amp;quot;You have a way of coming easily to me\n~
+##  6 Taylor S~ Taylor S~ The Outside     &amp;quot;I didn&#39;t know what I would find\nWhen I~
+##  7 Taylor S~ Taylor S~ Tied Together ~ &amp;quot;Seems the only one who doesn&#39;t see your~
+##  8 Taylor S~ Taylor S~ Stay Beautiful  &amp;quot;Cory&#39;s eyes are like a jungle\nHe smile~
+##  9 Taylor S~ Taylor S~ Should’ve Said~ &amp;quot;It&#39;s strange to think the songs we used~
+## 10 Taylor S~ Taylor S~ Mary’s Song     &amp;quot;She said\n\&amp;quot;I was seven, and you were n~
+## # ... with 122 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;glimpse(taylor_swift_lyrics)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 132
+## Columns: 4
+## $ artist &amp;lt;chr&amp;gt; &amp;quot;Taylor Swift&amp;quot;, &amp;quot;Taylor Swift&amp;quot;, &amp;quot;Taylor Swift&amp;quot;, &amp;quot;Taylor Swif...
+## $ album  &amp;lt;chr&amp;gt; &amp;quot;Taylor Swift&amp;quot;, &amp;quot;Taylor Swift&amp;quot;, &amp;quot;Taylor Swift&amp;quot;, &amp;quot;Taylor Swif...
+## $ title  &amp;lt;chr&amp;gt; &amp;quot;Tim McGraw&amp;quot;, &amp;quot;Picture to Burn&amp;quot;, &amp;quot;Teardrops on my Guitar&amp;quot;, &amp;quot;...
+## $ lyrics &amp;lt;chr&amp;gt; &amp;quot;He said the way my blue eyes shinx\nPut those Georgia stars...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;strong&gt;beyonce_lyrics&lt;/strong&gt; appears to be structured differently than the &lt;strong&gt;taylor_swift_lyrics&lt;/strong&gt;. The lyrics from Taylor Swift is stored 1 line per title/song name, while Beyonce&amp;rsquo;s lyrics are stored by song lines. This is a problem, and we&amp;rsquo;ll have to rectify this prior to building our classifier.&lt;/p&gt;
+&lt;p&gt;My idea of rectifying this would be to collapse the data from Beyonce&amp;rsquo;s lyrics to get them into the same structure as Taylor Swift&amp;rsquo;s lyrics.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;beyonce_lyrics &amp;lt;- beyonce_lyrics %&amp;gt;%
+  group_by(
+    artist_name, song_name
+  ) %&amp;gt;%
+  summarise(
+    lyrics = paste0(line, collapse = &#39; &#39;)
+  ) %&amp;gt;% 
+  ungroup() %&amp;gt;%
+  select(
+    &#39;artist&#39; = artist_name,
+    &#39;title&#39; = song_name,
+    lyrics
+  )
+
+beyonce_lyrics
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 391 x 3
+##    artist  title                        lyrics                                  
+##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;                        &amp;lt;chr&amp;gt;                                   
+##  1 Beyoncé &amp;quot;\&amp;quot;Self-Titled\&amp;quot; Part 1 . T~ &amp;quot;I see music. It&#39;s more than just...wha~
+##  2 Beyoncé &amp;quot;\&amp;quot;Self-Titled\&amp;quot; Part 2 . I~ &amp;quot;There&#39;s a moment where things click. W~
+##  3 Beyoncé &amp;quot;***Flawless (Ft. Chimamand~ &amp;quot;Your challengers are a young group fro~
+##  4 Beyoncé &amp;quot;***Flawless (Remix) (Ft. N~ &amp;quot;Dum-da-de-da Do, do, do, do, do, do (C~
+##  5 Beyoncé &amp;quot;&amp;lt;U+200B&amp;gt;come home (nala interlude)&amp;quot; &amp;quot;You have to come home We&#39;ve really nee~
+##  6 Beyoncé &amp;quot;&amp;lt;U+200B&amp;gt;war (nala interlude)&amp;quot;       &amp;quot;Your reign is over, Scar If you wanna ~
+##  7 Beyoncé &amp;quot;&amp;lt;U+200E&amp;gt;blind trust&amp;quot;                &amp;quot;Go out tonight Feel nice tonight Stay ~
+##  8 Beyoncé &amp;quot;1+1&amp;quot;                        &amp;quot;If I ain&#39;t got nothing, I got you If I~
+##  9 Beyoncé &amp;quot;2017 Grammy&#39;s Best Urban C~ &amp;quot;Thank you so much. Hi, baby. Thank you~
+## 10 Beyoncé &amp;quot;6 Inch (Ft. The Weeknd)&amp;quot;    &amp;quot;Six inch heels, she walked in the club~
+## # ... with 381 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Okay - this appears to be much better, and will allow us to merge them together with the Taylor Swift data. Our outcome &lt;em&gt;y&lt;/em&gt; that we are trying to predict will be the &amp;lsquo;artist&amp;rsquo; column. The features &lt;em&gt;x&lt;/em&gt; will be the song lyrics. In order to get them to a usable state for our model, we will have to perform some preprocessing and feature engineering.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;taylor_swift_lyrics &amp;lt;- taylor_swift_lyrics %&amp;gt;% 
+  select(
+    artist, title, lyrics
+  )
+
+data &amp;lt;- bind_rows(
+  taylor_swift_lyrics, beyonce_lyrics
+)
+
+data
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 523 x 3
+##    artist     title             lyrics                                          
+##    &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;             &amp;lt;chr&amp;gt;                                           
+##  1 Taylor Sw~ Tim McGraw        &amp;quot;He said the way my blue eyes shinx\nPut those ~
+##  2 Taylor Sw~ Picture to Burn   &amp;quot;State the obvious, I didn&#39;t get my perfect fan~
+##  3 Taylor Sw~ Teardrops on my ~ &amp;quot;Drew looks at me,\nI fake a smile so he won&#39;t ~
+##  4 Taylor Sw~ A Place in This ~ &amp;quot;I don&#39;t know what I want, so don&#39;t ask me\n&#39;Ca~
+##  5 Taylor Sw~ Cold As You       &amp;quot;You have a way of coming easily to me\nAnd whe~
+##  6 Taylor Sw~ The Outside       &amp;quot;I didn&#39;t know what I would find\nWhen I went l~
+##  7 Taylor Sw~ Tied Together Wi~ &amp;quot;Seems the only one who doesn&#39;t see your beauty~
+##  8 Taylor Sw~ Stay Beautiful    &amp;quot;Cory&#39;s eyes are like a jungle\nHe smiles; it&#39;s~
+##  9 Taylor Sw~ Should’ve Said No &amp;quot;It&#39;s strange to think the songs we used to sin~
+## 10 Taylor Sw~ Mary’s Song       &amp;quot;She said\n\&amp;quot;I was seven, and you were nine\nI ~
+## # ... with 513 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After merging the data together, we will split our data into a separate training and testing dataset.&lt;/p&gt;
+&lt;h1 id=&#34;model-building&#34;&gt;Model building&lt;/h1&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(1)
+splits &amp;lt;- initial_split(data, strata = artist)
+
+train &amp;lt;- training(splits)
+test &amp;lt;- testing(splits)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The data has now been split, where 75% of the data we have available will be used to train our classifier, and the remaining 25% will be left for validation of the model and to estimate the overall performance.&lt;/p&gt;
+&lt;p&gt;We will next create a &amp;lsquo;recipe&amp;rsquo; and perform feature engineering on our training data. We will do this in various steps, including tokenizing the lyrics, removing stop words, excluding words that appear less than 20 times, performing term-frequency inverse-document-frequency (TF-IDF), and finally normalization.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;rec &amp;lt;- recipe(artist ~ lyrics, data = train) %&amp;gt;%
+  step_tokenize(lyrics) %&amp;gt;%
+  step_stopwords(lyrics) %&amp;gt;%
+  step_tokenfilter(lyrics, min_times = 20, max_tokens = 500) %&amp;gt;%
+  step_tfidf(lyrics) %&amp;gt;%
+  step_normalize(all_predictors())
+
+rec
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Data Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##    outcome          1
+##  predictor          1
+## 
+## Operations:
+## 
+## Tokenization for lyrics
+## Stop word removal for lyrics
+## Text filtering for lyrics
+## Term frequency-inverse document frequency with lyrics
+## Centering and scaling for all_predictors()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that we have a &amp;lsquo;recipe&amp;rsquo; for pre-processing our data into a usable state to feed into our model, we will create a specification of the classifier. In this instance we will be building a support vector machine (SVM) classifier from the kernlab package.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_spec &amp;lt;- svm_rbf(cost = tune(), rbf_sigma = tune()) %&amp;gt;%
+  set_engine(&#39;kernlab&#39;) %&amp;gt;%
+  set_mode(&#39;classification&#39;)
+
+svm_spec
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Radial Basis Function Support Vector Machine Specification (classification)
+## 
+## Main Arguments:
+##   cost = tune()
+##   rbf_sigma = tune()
+## 
+## Computational engine: kernlab
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;model-paremter-tuning&#34;&gt;Model paremter tuning&lt;/h2&gt;
+&lt;p&gt;The model parameters cost and rbf_sigma will be tuned via a grid search of 25 values&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_wf &amp;lt;- workflow() %&amp;gt;%
+  add_model(svm_spec) %&amp;gt;%
+  add_recipe(rec)
+
+svm_tune_folds &amp;lt;- vfold_cv(train, strata = artist)
+
+set.seed(1)
+svm_tune_res &amp;lt;- tune_grid(
+  svm_wf,
+  resamples = svm_tune_folds,
+  grid = 25
+)
+
+tune_metrics &amp;lt;- svm_tune_res %&amp;gt;% collect_metrics()
+
+tune_metrics %&amp;gt;%
+  filter(., .metric == &#39;accuracy&#39;) %&amp;gt;%
+  ggplot(.,
+         aes(y = rbf_sigma, x = cost, color = mean)) +
+  geom_point() +
+  scale_color_viridis_c()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/taylor_swift_and_beyonce/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_tune_res %&amp;gt;% show_best(metric = &#39;accuracy&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 7
+##      cost   rbf_sigma .metric  .estimator  mean     n std_err
+##     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;
+## 1 4.92    0.00122     accuracy binary     0.822    10 0.0143 
+## 2 9.16    0.000508    accuracy binary     0.812    10 0.0151 
+## 3 3.54    0.000220    accuracy binary     0.789    10 0.0122 
+## 4 0.00120 0.00000211  accuracy binary     0.748    10 0.00195
+## 5 0.00219 0.000000329 accuracy binary     0.748    10 0.00195
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;best_accuracy &amp;lt;- svm_tune_res %&amp;gt;% select_best(., metric = &#39;accuracy&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;final-model&#34;&gt;Final Model&lt;/h1&gt;
+&lt;p&gt;The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_final_wf &amp;lt;- finalize_workflow(
+  svm_wf,
+  best_accuracy
+)
+
+final_res &amp;lt;- svm_final_wf %&amp;gt;%
+  last_fit(splits)
+
+final_metrics &amp;lt;- final_res %&amp;gt;% collect_metrics()
+
+final_metrics
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 x 3
+##   .metric  .estimator .estimate
+##   &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;
+## 1 accuracy binary         0.869
+## 2 roc_auc  binary         0.918
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Our final model using the tuned parameters optimizing for accuracy allowed us to achieve a model accuracy of 0.8692308 and ROC of binary, binary&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s have a closer look at the performance of the model via a confusion matrix&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final_preds &amp;lt;- final_res %&amp;gt;%
+  collect_predictions()
+
+
+final_preds %&amp;gt;%
+  conf_mat(
+    ., artist, .pred_class
+  ) 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##               Truth
+## Prediction     Beyoncé Taylor Swift
+##   Beyoncé           93           13
+##   Taylor Swift       4           20
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final_preds %&amp;gt;%
+  conf_mat(
+    ., artist, .pred_class
+  ) %&amp;gt;%
+  summary()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 13 x 3
+##    .metric              .estimator .estimate
+##    &amp;lt;chr&amp;gt;                &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt;
+##  1 accuracy             binary         0.869
+##  2 kap                  binary         0.621
+##  3 sens                 binary         0.959
+##  4 spec                 binary         0.606
+##  5 ppv                  binary         0.877
+##  6 npv                  binary         0.833
+##  7 mcc                  binary         0.634
+##  8 j_index              binary         0.565
+##  9 bal_accuracy         binary         0.782
+## 10 detection_prevalence binary         0.815
+## 11 precision            binary         0.877
+## 12 recall               binary         0.959
+## 13 f_meas               binary         0.916
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;closing&#34;&gt;Closing&lt;/h1&gt;
+&lt;p&gt;The model appears to be doing a decent job classifying the artist by the lyrics of the songs with an overall accuracy of 86.9%. Furthermore, the model appears to be doing a better job at classifying Beyonce lyrics than Taylor Swift&amp;rsquo;s&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s have a closer look at the songs that were misclassified from our model&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;test %&amp;gt;%
+  select(., -artist) %&amp;gt;%
+  bind_cols(final_preds) %&amp;gt;%
+  select(
+    artist, title,
+    .pred_Beyoncé, `.pred_Taylor Swift`,
+    .pred_class
+  ) %&amp;gt;%
+  filter(
+    artist != .pred_class
+  ) %&amp;gt;%
+  mutate(
+    across(c(.pred_Beyoncé, `.pred_Taylor Swift`), ~ paste0(format(round(.x*100, 1), 1), &#39;%&#39;))
+  ) %&amp;gt;%
+  print(50)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 17 x 5
+##    artist     title                 .pred_Beyoncé `.pred_Taylor Swi~ .pred_class
+##    &amp;lt;fct&amp;gt;      &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;         &amp;lt;chr&amp;gt;              &amp;lt;fct&amp;gt;      
+##  1 Taylor Sw~ Tell Me Why           68.3%         31.7%              Beyoncé    
+##  2 Taylor Sw~ Long Live             82.4%         17.6%              Beyoncé    
+##  3 Taylor Sw~ Red                   69.1%         30.9%              Beyoncé    
+##  4 Taylor Sw~ Holy Ground           58.0%         42.0%              Beyoncé    
+##  5 Taylor Sw~ Sad Beautiful Tragic  78.9%         21.1%              Beyoncé    
+##  6 Taylor Sw~ Come Back Be Here     65.9%         34.1%              Beyoncé    
+##  7 Taylor Sw~ Blank Space           64.9%         35.1%              Beyoncé    
+##  8 Taylor Sw~ How You Get The Girl  66.6%         33.4%              Beyoncé    
+##  9 Taylor Sw~ New Romantics         74.1%         25.9%              Beyoncé    
+## 10 Taylor Sw~ Death By A Thousand ~ 80.4%         19.6%              Beyoncé    
+## 11 Taylor Sw~ Afterglow             82.8%         17.2%              Beyoncé    
+## 12 Taylor Sw~ ME                    83.5%         16.5%              Beyoncé    
+## 13 Taylor Sw~ my tear ricochet      76.3%         23.7%              Beyoncé    
+## 14 Beyoncé    Back to Black (Ft. A~ 34.0%         66.0%              Taylor Swi~
+## 15 Beyoncé    New Shoes             6.6%          93.4%              Taylor Swi~
+## 16 Beyoncé    Pretty Hurts          32.2%         67.8%              Taylor Swi~
+## 17 Beyoncé    Stop Sign             38.5%         61.5%              Taylor Swi~
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

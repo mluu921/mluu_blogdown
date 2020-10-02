@@ -1,0 +1,271 @@
+---
+title: "Natural Language Processing (NLP) and developing a machine learning classifier on Beyonce and Taylor Swift lyrics #TidyTuesday"
+author: ''
+date: '2020-10-02'
+slug: taylor_swift_and_beyonce
+categories: [rstats, tidymodels, nlp, textrecipes, tidytuesday]
+tags: [rstats, tidymodels, nlp, textrecipes, tidytuesday]
+subtitle: ''
+summary: 'NLP and building a machine learning clasifier on Beyonce and Taylor Swift Lyrics #TidyTuesday'
+authors: []
+# lastmod: '2020-09-28T20:32:33-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = F,
+                      message = F,
+                      fig.align = 'center')
+
+library(tidytuesdayR)
+library(tidymodels)
+library(tidyverse)
+library(textrecipes)
+
+theme_set(
+  theme_light() + 
+    theme(panel.grid.minor = element_blank())
+)
+
+```
+
+Let's start off by loading the data from the tidytuesday github repository.
+
+# Reading in data
+
+```{r}
+beyonce_lyrics <-
+  readr::read_csv(
+    'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv'
+  ) %>%
+  janitor::clean_names()
+
+taylor_swift_lyrics <-
+  readr::read_csv(
+    'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/taylor_swift_lyrics.csv'
+  )  %>%
+  janitor::clean_names()
+
+```
+
+# Data pre-processing and feature engineering
+
+It appears the **beyonce_lyrics** and the **taylor_swift_lyrics** are the pertinent data sets for building our machine learning classifier. Let's have a closer look at the two datasets.
+
+```{r}
+beyonce_lyrics 
+
+glimpse(beyonce_lyrics)
+
+taylor_swift_lyrics
+
+glimpse(taylor_swift_lyrics)
+```
+
+The **beyonce_lyrics** appears to be structured differently than the **taylor_swift_lyrics**. The lyrics from Taylor Swift is stored 1 line per title/song name, while Beyonce's lyrics are stored by song lines. This is a problem, and we'll have to rectify this prior to building our classifier.
+
+My idea of rectifying this would be to collapse the data from Beyonce's lyrics to get them into the same structure as Taylor Swift's lyrics.
+
+```{r}
+beyonce_lyrics <- beyonce_lyrics %>%
+  group_by(
+    artist_name, song_name
+  ) %>%
+  summarise(
+    lyrics = paste0(line, collapse = ' ')
+  ) %>% 
+  ungroup() %>%
+  select(
+    'artist' = artist_name,
+    'title' = song_name,
+    lyrics
+  )
+
+beyonce_lyrics
+```
+
+Okay - this appears to be much better, and will allow us to merge them together with the Taylor Swift data. Our outcome *y* that we are trying to predict will be the 'artist' column. The features *x* will be the song lyrics. In order to get them to a usable state for our model, we will have to perform some preprocessing and feature engineering.
+
+```{r}
+taylor_swift_lyrics <- taylor_swift_lyrics %>% 
+  select(
+    artist, title, lyrics
+  )
+
+data <- bind_rows(
+  taylor_swift_lyrics, beyonce_lyrics
+)
+
+data
+```
+
+After merging the data together, we will split our data into a separate training and testing dataset.
+
+# Model building
+
+```{r}
+set.seed(1)
+splits <- initial_split(data, strata = artist)
+
+train <- training(splits)
+test <- testing(splits)
+
+```
+
+The data has now been split, where 75% of the data we have available will be used to train our classifier, and the remaining 25% will be left for validation of the model and to estimate the overall performance.
+
+We will next create a 'recipe' and perform feature engineering on our training data. We will do this in various steps, including tokenizing the lyrics, removing stop words, excluding words that appear less than 20 times, performing term-frequency inverse-document-frequency (TF-IDF), and finally normalization.
+
+```{r}
+
+rec <- recipe(artist ~ lyrics, data = train) %>%
+  step_tokenize(lyrics) %>%
+  step_stopwords(lyrics) %>%
+  step_tokenfilter(lyrics, min_times = 20, max_tokens = 500) %>%
+  step_tfidf(lyrics) %>%
+  step_normalize(all_predictors())
+
+rec
+```
+
+Now that we have a 'recipe' for pre-processing our data into a usable state to feed into our model, we will create a specification of the classifier. In this instance we will be building a support vector machine (SVM) classifier from the kernlab package. 
+
+```{r}
+
+svm_spec <- svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+  set_engine('kernlab') %>%
+  set_mode('classification')
+
+svm_spec
+
+```
+
+## Model paremter tuning
+
+The model parameters cost and rbf_sigma will be tuned via a grid search of 25 values
+
+```{r}
+svm_wf <- workflow() %>%
+  add_model(svm_spec) %>%
+  add_recipe(rec)
+
+svm_tune_folds <- vfold_cv(train, strata = artist)
+
+set.seed(1)
+svm_tune_res <- tune_grid(
+  svm_wf,
+  resamples = svm_tune_folds,
+  grid = 25
+)
+
+tune_metrics <- svm_tune_res %>% collect_metrics()
+
+tune_metrics %>%
+  filter(., .metric == 'accuracy') %>%
+  ggplot(.,
+         aes(y = rbf_sigma, x = cost, color = mean)) +
+  geom_point() +
+  scale_color_viridis_c()
+
+svm_tune_res %>% show_best(metric = 'accuracy')
+
+
+best_accuracy <- svm_tune_res %>% select_best(., metric = 'accuracy')
+
+```
+
+# Final Model
+
+The optimal tuning parameters for accuracy appears to be `r format(round(best_accuracy$cost, 3), 3)` for cost and `r format(round(best_accuracy$rbf_sigma, 3), 3)` for rbf_sigma. We will use these parameters for our final model.
+
+```{r}
+svm_final_wf <- finalize_workflow(
+  svm_wf,
+  best_accuracy
+)
+
+final_res <- svm_final_wf %>%
+  last_fit(splits)
+
+final_metrics <- final_res %>% collect_metrics()
+
+final_metrics
+
+```
+
+Our final model using the tuned parameters optimizing for accuracy allowed us to achieve a model accuracy of `r final_metrics$.estimate[[1]]` and ROC of `r final_metrics[[2]]`
+
+Let's have a closer look at the performance of the model via a confusion matrix
+
+```{r}
+final_preds <- final_res %>%
+  collect_predictions()
+
+
+final_preds %>%
+  conf_mat(
+    ., artist, .pred_class
+  ) 
+
+final_preds %>%
+  conf_mat(
+    ., artist, .pred_class
+  ) %>%
+  summary()
+
+```
+
+# Closing
+
+The model appears to be doing a decent job classifying the artist by the lyrics of the songs with an overall accuracy of `r paste0(format(round(final_metrics$.estimate[[1]]*100, 1), 1), '%')`. Furthermore, the model appears to be doing a better job at classifying Beyonce lyrics than Taylor Swift's
+
+Let's have a closer look at the songs that were misclassified from our model
+
+```{r}
+test %>%
+  select(., -artist) %>%
+  bind_cols(final_preds) %>%
+  select(
+    artist, title,
+    .pred_Beyoncé, `.pred_Taylor Swift`,
+    .pred_class
+  ) %>%
+  filter(
+    artist != .pred_class
+  ) %>%
+  mutate(
+    across(c(.pred_Beyoncé, `.pred_Taylor Swift`), ~ paste0(format(round(.x*100, 1), 1), '%'))
+  ) %>%
+  print(50)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

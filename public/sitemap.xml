@@ -18,6 +18,81 @@
   </url>
   
   <url>
+    <loc>/categories/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/taylor_swift_and_beyonce/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/nlp/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/nlp/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/rstats/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/rstats/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/textrecipes/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/textrecipes/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/tidymodels/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/tidymodels/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tag/tidytuesday/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/category/tidytuesday/</loc>
+    <lastmod>2020-10-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/project/chla-nicu-feeding-calculator/</loc>
     <lastmod>2020-09-29T00:00:00+00:00</lastmod>
   </url>
@@ -25,11 +100,6 @@
   <url>
     <loc>/tag/clinical/</loc>
     <lastmod>2020-09-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/</loc>
-    <lastmod>2020-09-28T20:32:33-07:00</lastmod>
   </url>
   
   <url>
@@ -45,21 +115,6 @@
   <url>
     <loc>/tag/shiny/</loc>
     <lastmod>2020-09-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/</loc>
-    <lastmod>2020-09-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2020-09-28T20:32:33-07:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/this-is-a-test-post/</loc>
-    <lastmod>2020-09-28T20:32:33-07:00</lastmod>
   </url>
   
   <url>
@@ -99,10 +154,6 @@
   
   <url>
     <loc>/authors/</loc>
-  </url>
-  
-  <url>
-    <loc>/categories/</loc>
   </url>
   
   <url>
