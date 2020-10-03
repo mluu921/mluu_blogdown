@@ -19,7 +19,20 @@
       <guid>/post/taylor_swift_and_beyonce/</guid>
       <description>&lt;p&gt;Let&amp;rsquo;s start off by loading the data from the tidytuesday github repository.&lt;/p&gt;
 &lt;h1 id=&#34;reading-in-data&#34;&gt;Reading in data&lt;/h1&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;beyonce_lyrics &amp;lt;-
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(tidytuesdayR)
+library(tidymodels)
+library(tidyverse)
+library(textrecipes)
+library(future)
+
+plan(multisession)
+
+theme_set(
+  theme_light() + 
+    theme(panel.grid.minor = element_blank())
+)
+
+beyonce_lyrics &amp;lt;-
   readr::read_csv(
     &#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv&#39;
   ) %&amp;gt;%
@@ -224,23 +237,23 @@ tune_metrics %&amp;gt;%
 &lt;p&gt;&lt;img src=&#34;/post/taylor_swift_and_beyonce/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_tune_res %&amp;gt;% show_best(metric = &#39;accuracy&#39;)
 &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 7
-##      cost   rbf_sigma .metric  .estimator  mean     n std_err
-##     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt;
-## 1 4.92    0.00122     accuracy binary     0.822    10 0.0143 
-## 2 9.16    0.000508    accuracy binary     0.812    10 0.0151 
-## 3 3.54    0.000220    accuracy binary     0.789    10 0.0122 
-## 4 0.00120 0.00000211  accuracy binary     0.748    10 0.00195
-## 5 0.00219 0.000000329 accuracy binary     0.748    10 0.00195
+&lt;pre&gt;&lt;code&gt;## # A tibble: 5 x 8
+##     cost     rbf_sigma .metric  .estimator  mean     n std_err .config
+##    &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  
+## 1 4.92   0.00122       accuracy binary     0.822    10 0.0143  Model17
+## 2 9.16   0.000508      accuracy binary     0.812    10 0.0151  Model10
+## 3 3.54   0.000220      accuracy binary     0.789    10 0.0122  Model19
+## 4 0.0899 0.0000389     accuracy binary     0.748    10 0.00195 Model01
+## 5 0.259  0.00000000111 accuracy binary     0.748    10 0.00195 Model02
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;best_accuracy &amp;lt;- svm_tune_res %&amp;gt;% select_best(., metric = &#39;accuracy&#39;)
 
 best_accuracy
 &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 2
-##    cost rbf_sigma
-##   &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
-## 1  4.92   0.00122
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 3
+##    cost rbf_sigma .config
+##   &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  
+## 1  4.92   0.00122 Model17
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h1 id=&#34;final-model&#34;&gt;Final Model&lt;/h1&gt;
 &lt;p&gt;The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model. We will fit our final model on the full training data, and assess the performance on the test data.&lt;/p&gt;

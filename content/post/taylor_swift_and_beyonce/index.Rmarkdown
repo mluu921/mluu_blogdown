@@ -24,15 +24,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       message = F,
                       fig.align = 'center')
 
-library(tidytuesdayR)
-library(tidymodels)
-library(tidyverse)
-library(textrecipes)
 
-theme_set(
-  theme_light() + 
-    theme(panel.grid.minor = element_blank())
-)
 
 ```
 
@@ -41,6 +33,19 @@ Let's start off by loading the data from the tidytuesday github repository.
 # Reading in data
 
 ```{r}
+library(tidytuesdayR)
+library(tidymodels)
+library(tidyverse)
+library(textrecipes)
+library(future)
+
+plan(multisession)
+
+theme_set(
+  theme_light() + 
+    theme(panel.grid.minor = element_blank())
+)
+
 beyonce_lyrics <-
   readr::read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv'

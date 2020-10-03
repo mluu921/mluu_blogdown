@@ -26,6 +26,19 @@ Let's start off by loading the data from the tidytuesday github repository.
 
 
 ```r
+library(tidytuesdayR)
+library(tidymodels)
+library(tidyverse)
+library(textrecipes)
+library(future)
+
+plan(multisession)
+
+theme_set(
+  theme_light() + 
+    theme(panel.grid.minor = element_blank())
+)
+
 beyonce_lyrics <-
   readr::read_csv(
     'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-29/beyonce_lyrics.csv'
@@ -291,14 +304,14 @@ svm_tune_res %>% show_best(metric = 'accuracy')
 ```
 
 ```
-## # A tibble: 5 x 7
-##      cost   rbf_sigma .metric  .estimator  mean     n std_err
-##     <dbl>       <dbl> <chr>    <chr>      <dbl> <int>   <dbl>
-## 1 4.92    0.00122     accuracy binary     0.822    10 0.0143 
-## 2 9.16    0.000508    accuracy binary     0.812    10 0.0151 
-## 3 3.54    0.000220    accuracy binary     0.789    10 0.0122 
-## 4 0.00120 0.00000211  accuracy binary     0.748    10 0.00195
-## 5 0.00219 0.000000329 accuracy binary     0.748    10 0.00195
+## # A tibble: 5 x 8
+##     cost     rbf_sigma .metric  .estimator  mean     n std_err .config
+##    <dbl>         <dbl> <chr>    <chr>      <dbl> <int>   <dbl> <chr>  
+## 1 4.92   0.00122       accuracy binary     0.822    10 0.0143  Model17
+## 2 9.16   0.000508      accuracy binary     0.812    10 0.0151  Model10
+## 3 3.54   0.000220      accuracy binary     0.789    10 0.0122  Model19
+## 4 0.0899 0.0000389     accuracy binary     0.748    10 0.00195 Model01
+## 5 0.259  0.00000000111 accuracy binary     0.748    10 0.00195 Model02
 ```
 
 ```r
@@ -308,10 +321,10 @@ best_accuracy
 ```
 
 ```
-## # A tibble: 1 x 2
-##    cost rbf_sigma
-##   <dbl>     <dbl>
-## 1  4.92   0.00122
+## # A tibble: 1 x 3
+##    cost rbf_sigma .config
+##   <dbl>     <dbl> <chr>  
+## 1  4.92   0.00122 Model17
 ```
 
 # Final Model
