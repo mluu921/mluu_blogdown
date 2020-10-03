@@ -239,7 +239,7 @@ svm_spec
 ## 
 ## Computational engine: kernlab
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2 id=&#34;model-paremter-tuning&#34;&gt;Model paremter tuning&lt;/h2&gt;
+&lt;h2 id=&#34;model-parameter-tuning&#34;&gt;Model parameter tuning&lt;/h2&gt;
 &lt;p&gt;The model parameters cost and rbf_sigma will be tuned via a grid search of 25 values&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_wf &amp;lt;- workflow() %&amp;gt;%
   add_model(svm_spec) %&amp;gt;%
@@ -285,7 +285,7 @@ best_accuracy
 ## 1  4.92   0.00122
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h1 id=&#34;final-model&#34;&gt;Final Model&lt;/h1&gt;
-&lt;p&gt;The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model.&lt;/p&gt;
+&lt;p&gt;The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model. We will fit our final model on the full training data, and assess the performance on the test data.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;svm_final_wf &amp;lt;- finalize_workflow(
   svm_wf,
   best_accuracy

@@ -255,7 +255,7 @@ svm_spec
 ## Computational engine: kernlab
 ```
 
-## Model paremter tuning
+## Model parameter tuning
 
 The model parameters cost and rbf_sigma will be tuned via a grid search of 25 values
 
@@ -316,7 +316,7 @@ best_accuracy
 
 # Final Model
 
-The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model.
+The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model. We will fit our final model on the full training data, and assess the performance on the test data.
 
 
 ```r
