@@ -303,6 +303,15 @@ svm_tune_res %>% show_best(metric = 'accuracy')
 
 ```r
 best_accuracy <- svm_tune_res %>% select_best(., metric = 'accuracy')
+
+best_accuracy
+```
+
+```
+## # A tibble: 1 x 2
+##    cost rbf_sigma
+##   <dbl>     <dbl>
+## 1  4.92   0.00122
 ```
 
 # Final Model
@@ -332,7 +341,7 @@ final_metrics
 ## 2 roc_auc  binary         0.918
 ```
 
-Our final model using the tuned parameters optimizing for accuracy allowed us to achieve a model accuracy of 0.8692308 and ROC of binary, binary
+Our final model using the tuned parameters optimizing for accuracy allowed us to achieve a model accuracy of 86.9% and ROC of 0.92
 
 Let's have a closer look at the performance of the model via a confusion matrix
 

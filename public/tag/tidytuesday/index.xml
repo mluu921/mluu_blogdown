@@ -234,6 +234,13 @@ tune_metrics %&amp;gt;%
 ## 5 0.00219 0.000000329 accuracy binary     0.748    10 0.00195
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;best_accuracy &amp;lt;- svm_tune_res %&amp;gt;% select_best(., metric = &#39;accuracy&#39;)
+
+best_accuracy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 2
+##    cost rbf_sigma
+##   &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+## 1  4.92   0.00122
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h1 id=&#34;final-model&#34;&gt;Final Model&lt;/h1&gt;
 &lt;p&gt;The optimal tuning parameters for accuracy appears to be 4.916 for cost and 0.001 for rbf_sigma. We will use these parameters for our final model.&lt;/p&gt;
@@ -255,7 +262,7 @@ final_metrics
 ## 1 accuracy binary         0.869
 ## 2 roc_auc  binary         0.918
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Our final model using the tuned parameters optimizing for accuracy allowed us to achieve a model accuracy of 0.8692308 and ROC of binary, binary&lt;/p&gt;
+&lt;p&gt;Our final model using the tuned parameters optimizing for accuracy allowed us to achieve a model accuracy of 86.9% and ROC of 0.92&lt;/p&gt;
 &lt;p&gt;Let&amp;rsquo;s have a closer look at the performance of the model via a confusion matrix&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final_preds &amp;lt;- final_res %&amp;gt;%
   collect_predictions()
