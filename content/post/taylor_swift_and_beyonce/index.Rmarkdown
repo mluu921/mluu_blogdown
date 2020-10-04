@@ -38,6 +38,7 @@ library(tidymodels)
 library(tidyverse)
 library(textrecipes)
 library(future)
+library(gt)
 
 plan(multisession)
 
@@ -250,7 +251,17 @@ test %>%
   mutate(
     across(c(.pred_Beyoncé, `.pred_Taylor Swift`), ~ paste0(format(round(.x*100, 1), 1), '%'))
   ) %>%
-  print(50)
+  group_by(., artist) %>%
+  gt() %>%
+  cols_label(
+    artist = 'Artist',
+    title = 'Title',
+    .pred_Beyoncé = '% Beyonce',
+    `.pred_Taylor Swift` = '% Taylor',
+    .pred_class = 'Prediction'
+  )
+  
+  
 
 
 ```
