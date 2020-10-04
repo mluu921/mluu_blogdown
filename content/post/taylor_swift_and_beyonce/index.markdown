@@ -8,6 +8,7 @@ tags: [rstats, tidymodels, nlp, textrecipes, tidytuesday]
 subtitle: ''
 summary: 'NLP and building a machine learning clasifier on Beyonce and Taylor Swift Lyrics #TidyTuesday'
 authors: []
+reading_time: false  # Show estimated reading time?
 # lastmod: '2020-09-28T20:32:33-07:00'
 featured: no
 image:
