@@ -170,7 +170,7 @@ map <- leaflet(counties) %>%
 # htmlwidgets::saveWidget(map, 'covid19_mask_usage.html', selfcontained = T)
 ```
 
-![http://michaelluu.info/files/covid19_mask_usage/map.html](leafletmap.jpg)
+[![](leafletmap.jpg)](http://michaelluu.info/files/covid19_mask_usage/map.html)
 
 
 

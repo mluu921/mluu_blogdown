@@ -174,7 +174,8 @@ map &amp;lt;- leaflet(counties) %&amp;gt;%
 
 # htmlwidgets::saveWidget(map, &#39;covid19_mask_usage.html&#39;, selfcontained = T)
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;leafletmap.jpg&#34; alt=&#34;http://michaelluu.info/files/covid19_mask_usage/map.html&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://michaelluu.info/files/covid19_mask_usage/map.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;img src=&#34;leafletmap.jpg&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
