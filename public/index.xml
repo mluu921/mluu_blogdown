@@ -59,8 +59,7 @@
       <link>/post/covid19_mask_usage/</link>
       <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
       <guid>/post/covid19_mask_usage/</guid>
-      <description>&lt;p&gt;
-&lt;a href=&#34;nytimesmap.png&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;/covid19_mask_usage/index_files/nytimesmap.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;We&amp;rsquo;re going to recreate the NY Times mask-use survey data using R and the leaflet open source interactive mapping package. We can start off by loading the data from the New York Times github repository found 
 &lt;a href=&#34;https://github.com/nytimes/covid-19-data/tree/master/mask-use&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;url &amp;lt;- &#39;https://raw.githubusercontent.com/nytimes/covid-19-data/master/mask-use/mask-use-by-county.csv&#39;
@@ -172,11 +171,8 @@ map &amp;lt;- leaflet(counties) %&amp;gt;%
         x * 100
     )
   )
-
-widgetframe::frameWidget(map, height = 600)
 &lt;/code&gt;&lt;/pre&gt;
-&lt;!--html_preserve--&gt;&lt;div id=&#34;htmlwidget-4986b38ba31af394600f&#34; style=&#34;width:100%;height:600px;&#34; class=&#34;widgetframe html-widget&#34;&gt;&lt;/div&gt;
-&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-4986b38ba31af394600f&#34;&gt;{&#34;x&#34;:{&#34;url&#34;:&#34;/post/covid19_mask_usage/index_files/figure-html//widgets/widget_unnamed-chunk-7.html&#34;,&#34;options&#34;:{&#34;xdomain&#34;:&#34;*&#34;,&#34;allowfullscreen&#34;:false,&#34;lazyload&#34;:false}},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;&lt;!--/html_preserve--&gt;
+&lt;p&gt;&lt;img src=&#34;/covid19_mask_usage/index_files/leafletmap.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 </description>
     </item>
     
