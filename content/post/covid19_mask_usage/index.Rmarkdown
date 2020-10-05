@@ -25,6 +25,7 @@ knitr::opts_chunk$set(echo = T, warning = F, message = F,
 library(tidyverse)
 library(leaflet)
 library(lubridate)
+library(widgetframe)
 
 ```
 
@@ -136,7 +137,7 @@ map <- leaflet(counties) %>%
     )
   )
 
-map
+widgetframe::frameWidget(map, height = 600)
 ```
 
 
