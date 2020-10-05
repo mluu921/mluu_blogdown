@@ -159,7 +159,7 @@ map <- leaflet(counties) %>%
     position = 'bottomright',
     pal = color_pal,
     values = ~ counties$prob,
-    title = '% Always Mask Usage',
+    title = '% Mask Usage',
     labFormat = labelFormat(
       suffix = '%',
       transform = function(x)

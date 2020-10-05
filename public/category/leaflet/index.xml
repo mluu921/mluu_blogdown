@@ -122,7 +122,7 @@ map &amp;lt;- leaflet(counties) %&amp;gt;%
     position = &#39;bottomright&#39;,
     pal = color_pal,
     values = ~ counties$prob,
-    title = &#39;% Always Mask Usage&#39;,
+    title = &#39;% Mask Usage&#39;,
     labFormat = labelFormat(
       suffix = &#39;%&#39;,
       transform = function(x)
