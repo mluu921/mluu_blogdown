@@ -10,7 +10,7 @@ summary: "Recreating the New York Times mask utilization survey data with the R 
 authors: []
 # lastmod: '2020-09-28T20:32:33-07:00'
 reading_time: false  # Show estimated reading time?
-featured: no
+featured: yes
 image:
   caption: ''
   focal_point: ''
@@ -19,8 +19,6 @@ projects: []
 ---
 
 
-
-![](nytimesmap.jpg)
 
 We're going to recreate the NY Times mask-use survey data using R and the leaflet open source interactive mapping package. We can start off by loading the data from the New York Times github repository found [here](https://github.com/nytimes/covid-19-data/tree/master/mask-use)
 
@@ -167,7 +165,7 @@ map <- leaflet(counties) %>%
     )
   )
 
-# htmlwidgets::saveWidget(map, 'covid19_mask_usage.html', selfcontained = T)
+# htmlwidgets::saveWidget(map, 'map.html', selfcontained = T)
 ```
 
 [![](leafletmap.jpg)](http://michaelluu.info/files/covid19_mask_usage/map.html)

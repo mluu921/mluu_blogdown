@@ -261,16 +261,15 @@
   
   
     
-    
   
   
-  <meta property="twitter:card" content="summary">
+  <meta property="twitter:card" content="summary_large_image">
   
   <meta property="og:site_name" content="Michael Luu">
   <meta property="og:url" content="/post/covid19_mask_usage/">
   <meta property="og:title" content="Recreating the New York Times mask utilization survey data with the R opensource Leaflet package | Michael Luu">
-  <meta property="og:description" content="Recreating the New York Times mask utilization survey data with the R opensource Leaflet package"><meta property="og:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png">
-  <meta property="twitter:image" content="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="Recreating the New York Times mask utilization survey data with the R opensource Leaflet package"><meta property="og:image" content="/post/covid19_mask_usage/featured.jpg">
+  <meta property="twitter:image" content="/post/covid19_mask_usage/featured.jpg"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2020-10-04T00:00:00&#43;00:00">
@@ -302,6 +301,10 @@
     "@id": "/post/covid19_mask_usage/"
   },
   "headline": "Recreating the New York Times mask utilization survey data with the R opensource Leaflet package",
+  
+  "image": [
+    "/post/covid19_mask_usage/featured.jpg"
+  ],
   
   "datePublished": "2020-10-04T00:00:00Z",
   "dateModified": "2020-10-04T00:00:00Z",
@@ -601,18 +604,26 @@
 
 
 
-  
+
+
+
+
+
+
+
 
   
   
+    
   
+
+
 <div class="article-container pt-3">
   <h1>Recreating the New York Times mask utilization survey data with the R opensource Leaflet package</h1>
 
   
 
   
-    
 
 
 <div class="article-metadata">
@@ -647,22 +658,29 @@
 
 </div>
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 428px;">
+  <div style="position: relative">
+    <img src="/post/covid19_mask_usage/featured_hu528586cfb3ede00f68d6ecd3295efc24_92425_720x0_resize_q90_lanczos.jpg" alt="" class="featured-image">
+    
+  </div>
 </div>
 
 
@@ -670,8 +688,7 @@
   <div class="article-container">
 
     <div class="article-style">
-      <p><img src="nytimesmap.jpg" alt=""></p>
-<p>We&rsquo;re going to recreate the NY Times mask-use survey data using R and the leaflet open source interactive mapping package. We can start off by loading the data from the New York Times github repository found 
+      <p>We&rsquo;re going to recreate the NY Times mask-use survey data using R and the leaflet open source interactive mapping package. We can start off by loading the data from the New York Times github repository found 
 <a href="https://github.com/nytimes/covid-19-data/tree/master/mask-use" target="_blank" rel="noopener">here</a></p>
 <pre><code class="language-r">url &lt;- 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/mask-use/mask-use-by-county.csv'
 
@@ -783,7 +800,7 @@ map &lt;- leaflet(counties) %&gt;%
     )
   )
 
-# htmlwidgets::saveWidget(map, 'covid19_mask_usage.html', selfcontained = T)
+# htmlwidgets::saveWidget(map, 'map.html', selfcontained = T)
 </code></pre>
 <p>
 <a href="http://michaelluu.info/files/covid19_mask_usage/map.html" target="_blank" rel="noopener"><img src="leafletmap.jpg" alt=""></a></p>
