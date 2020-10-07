@@ -614,8 +614,6 @@
 
   
   
-    
-  
 
 
 <div class="article-container pt-3">
@@ -676,9 +674,9 @@
 </div>
 
 
-<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 428px;">
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 695px; max-height: 395px;">
   <div style="position: relative">
-    <img src="/post/covid19_mask_usage/featured_hu528586cfb3ede00f68d6ecd3295efc24_92425_720x0_resize_q90_lanczos.jpg" alt="" class="featured-image">
+    <img src="/post/covid19_mask_usage/featured.jpg" alt="" class="featured-image">
     
   </div>
 </div>
@@ -744,10 +742,10 @@ df &lt;- read_csv(url)
 </code></pre>
 <p>Since we have the county FIPS code data available, we&rsquo;ll need to merge this data with county geojson data for the United States which I was able to obtain from 
 <a href="https://eric.clst.org/tech/usgeojson/" target="_blank" rel="noopener">here</a></p>
-<pre><code class="language-r">counties &lt;- rgdal::readOGR('https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_20m.json')
+<pre><code class="language-r">counties &lt;- rgdal::readOGR('https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json')
 </code></pre>
 <pre><code>## OGR data source with driver: GeoJSON 
-## Source: &quot;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_20m.json&quot;, layer: &quot;gz_2010_us_050_00_20m&quot;
+## Source: &quot;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json&quot;, layer: &quot;gz_2010_us_050_00_500k&quot;
 ## with 3221 features
 ## It has 6 fields
 </code></pre>
@@ -776,7 +774,7 @@ df &lt;- read_csv(url)
   )
 </code></pre>
 <p>Finally, let&rsquo;s put this all together and create a Chloropleth map using the leaflet package</p>
-<pre><code class="language-r">color_pal &lt;- colorNumeric('viridis', counties$prob)
+<pre><code class="language-r">color_pal &lt;- colorNumeric('plasma', counties$prob)
 
 map &lt;- leaflet(counties) %&gt;%
   addTiles() %&gt;%
@@ -785,7 +783,7 @@ map &lt;- leaflet(counties) %&gt;%
     fillColor = ~ color_pal(prob),
     fillOpacity = .75,
     weight = 1,
-    color = 'black',
+    color = 'white',
     label = ~ label
   ) %&gt;%
   addLegend(

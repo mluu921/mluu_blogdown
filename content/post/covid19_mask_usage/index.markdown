@@ -95,12 +95,12 @@ Since we have the county FIPS code data available, we'll need to merge this data
 
 
 ```r
-counties <- rgdal::readOGR('https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_20m.json')
+counties <- rgdal::readOGR('https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json')
 ```
 
 ```
 ## OGR data source with driver: GeoJSON 
-## Source: "https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_20m.json", layer: "gz_2010_us_050_00_20m"
+## Source: "https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json", layer: "gz_2010_us_050_00_500k"
 ## with 3221 features
 ## It has 6 fields
 ```
@@ -141,7 +141,7 @@ Finally, let's put this all together and create a Chloropleth map using the leaf
 
 
 ```r
-color_pal <- colorNumeric('viridis', counties$prob)
+color_pal <- colorNumeric('plasma', counties$prob)
 
 map <- leaflet(counties) %>%
   addTiles() %>%
@@ -150,7 +150,7 @@ map <- leaflet(counties) %>%
     fillColor = ~ color_pal(prob),
     fillOpacity = .75,
     weight = 1,
-    color = 'black',
+    color = 'white',
     label = ~ label
   ) %>%
   addLegend(

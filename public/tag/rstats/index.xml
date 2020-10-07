@@ -73,10 +73,10 @@ df &amp;lt;- read_csv(url)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Since we have the county FIPS code data available, we&amp;rsquo;ll need to merge this data with county geojson data for the United States which I was able to obtain from 
 &lt;a href=&#34;https://eric.clst.org/tech/usgeojson/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;counties &amp;lt;- rgdal::readOGR(&#39;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_20m.json&#39;)
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;counties &amp;lt;- rgdal::readOGR(&#39;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json&#39;)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## OGR data source with driver: GeoJSON 
-## Source: &amp;quot;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_20m.json&amp;quot;, layer: &amp;quot;gz_2010_us_050_00_20m&amp;quot;
+## Source: &amp;quot;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json&amp;quot;, layer: &amp;quot;gz_2010_us_050_00_500k&amp;quot;
 ## with 3221 features
 ## It has 6 fields
 &lt;/code&gt;&lt;/pre&gt;
@@ -105,7 +105,7 @@ df &amp;lt;- read_csv(url)
   )
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally, let&amp;rsquo;s put this all together and create a Chloropleth map using the leaflet package&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;color_pal &amp;lt;- colorNumeric(&#39;viridis&#39;, counties$prob)
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;color_pal &amp;lt;- colorNumeric(&#39;plasma&#39;, counties$prob)
 
 map &amp;lt;- leaflet(counties) %&amp;gt;%
   addTiles() %&amp;gt;%
@@ -114,7 +114,7 @@ map &amp;lt;- leaflet(counties) %&amp;gt;%
     fillColor = ~ color_pal(prob),
     fillOpacity = .75,
     weight = 1,
-    color = &#39;black&#39;,
+    color = &#39;white&#39;,
     label = ~ label
   ) %&amp;gt;%
   addLegend(
