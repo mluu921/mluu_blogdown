@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>datavis | Michael Luu</title>
+    <link>/category/datavis/</link>
+      <atom:link href="/category/datavis/index.xml" rel="self" type="application/rss+xml" />
+    <description>datavis</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 07 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>datavis</title>
+      <link>/category/datavis/</link>
+    </image>
+    
+    <item>
+      <title>My life in Months - Making a &#39;life plot&#39; in R using ggplot2 </title>
+      <link>/post/mylifeinplots/</link>
+      <pubDate>Wed, 07 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/post/mylifeinplots/</guid>
+      <description>&lt;p&gt;This blog post is inspired by 
+&lt;a href=&#34;https://twitter.com/sharlagelfand&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Sharla Gefland&lt;/a&gt; twitter post found 
+&lt;a href=&#34;https://twitter.com/sharlagelfand/status/1282783913002373121?s=20&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;, where she made a &amp;lsquo;My Life in Months&amp;rsquo; plot.&lt;/p&gt;
+&lt;p&gt;Annotations have always been the bane of my existence in ggplot2, and I figured this would be a fun project to get some practice. Looking at her github repo found 
+&lt;a href=&#34;https://github.com/sharlagelfand/mylifeinmonths&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;, she made this figure using the waffle plot package found 
+&lt;a href=&#34;https://cran.r-project.org/web/packages/waffle/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;. Although using the waffle package may simplify some aspects of making this figure, recreating this figure in pure ggplot2 will open up the arguments for further customization that may not be available via the waffle package.&lt;/p&gt;
+&lt;p&gt;We can start off by creating a tibble for the basis of the plot. The goal here is to create a tibble starting from the starting month (month/year) I was born, until the current month/year. I can create this with the help of the &lt;code&gt;lubridate&lt;/code&gt; package, which simplifies the handling of dates in R, and using this package to further extract the month and year information from the date sequence.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;df &amp;lt;- tibble(
+  date = seq(mdy(&#39;9/1/1987&#39;), floor_date(Sys.Date(), &#39;month&#39;), &#39;month&#39;)
+) %&amp;gt;%
+  mutate(
+    month = month(date),
+    year = year(date)
+  )
+
+df &amp;lt;- tibble(date = seq(mdy(&#39;9/1/1987&#39;), Sys.Date(), &#39;1 month&#39;)) %&amp;gt;%
+  mutate(month = month(date),
+         year = year(date))
+
+df
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 398 x 3
+##    date       month  year
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1987-09-01     9  1987
+##  2 1987-10-01    10  1987
+##  3 1987-11-01    11  1987
+##  4 1987-12-01    12  1987
+##  5 1988-01-01     1  1988
+##  6 1988-02-01     2  1988
+##  7 1988-03-01     3  1988
+##  8 1988-04-01     4  1988
+##  9 1988-05-01     5  1988
+## 10 1988-06-01     6  1988
+## # ... with 388 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Using the tibble I just created, I can further define the &amp;lsquo;eras&amp;rsquo; that I would like to highlight in the life plot.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot_data &amp;lt;- df %&amp;gt;%
+  mutate(
+    era = case_when(
+      date %in% mdy(&#39;9/1/1987&#39;):mdy(&amp;quot;9/1/1991&amp;quot;) ~ &#39;Childhood&#39;,
+      date %in% mdy(&#39;10/1/1991&#39;):mdy(&#39;6/1/2005&#39;) ~ &#39;K-12 Grade School&#39;,
+      date %in% mdy(&#39;7/1/2005&#39;):mdy(&#39;12/1/2009&#39;) ~ &#39;BSc in Biological Sciences&#39;,
+      date %in% mdy(&#39;1/1/2010&#39;):mdy(&#39;7/1/2013&#39;) ~ &#39;Pre Graduate Work&#39;,
+      date %in% mdy(&#39;8/1/2013&#39;):mdy(&#39;6/1/2015&#39;) ~ &#39;MPH in Biostatistics &amp;amp; Epidemiology&#39;,
+      date %in% mdy(&#39;7/1/2015&#39;):mdy(&#39;8/1/2016&#39;) ~ &#39;Data Analyst&#39;,
+      date %in% mdy(&#39;9/1/2016&#39;):Sys.Date() ~ &#39;Biostatistician&#39;
+    )
+  ) %&amp;gt;%
+  mutate(era = factor(
+    era,
+    levels = c(
+      &#39;Childhood&#39;,
+      &#39;K-12 Grade School&#39;,
+      &#39;BSc in Biological Sciences&#39;,
+      &#39;Pre Graduate Work&#39;,
+      &#39;MPH in Biostatistics &amp;amp; Epidemiology&#39;,
+      &#39;Data Analyst&#39;,
+      &#39;Biostatistician&#39;
+    )
+  ))
+
+plot_data
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 398 x 4
+##    date       month  year era      
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;    
+##  1 1987-09-01     9  1987 Childhood
+##  2 1987-10-01    10  1987 Childhood
+##  3 1987-11-01    11  1987 Childhood
+##  4 1987-12-01    12  1987 Childhood
+##  5 1988-01-01     1  1988 Childhood
+##  6 1988-02-01     2  1988 Childhood
+##  7 1988-03-01     3  1988 Childhood
+##  8 1988-04-01     4  1988 Childhood
+##  9 1988-05-01     5  1988 Childhood
+## 10 1988-06-01     6  1988 Childhood
+## # ... with 388 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, I&amp;rsquo;ll create a base plot using ggplot2, where I&amp;rsquo;ll map the x axis to &lt;code&gt;year&lt;/code&gt;, and the y axis to &lt;code&gt;month&lt;/code&gt;. I&amp;rsquo;ll also use the geom, &lt;code&gt;geom_tile()&lt;/code&gt; to create the &amp;lsquo;blocks&amp;rsquo; that we see in the life plot, where we&amp;rsquo;ll map the fill to &lt;code&gt;era&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt; ggplot(plot_data, aes(y = month, x = year)) + 
+  geom_tile(color = &#39;white&#39;, aes(fill = era), size = 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we have a simple base plot to work with, we can further customize and clean up the figure. A trick to give us a bigger &amp;lsquo;space&amp;rsquo; to work with is to expand the limits of the &lt;code&gt;y&lt;/code&gt; and &lt;code&gt;x&lt;/code&gt; axis. Furthermore, I will use &lt;code&gt;scale_fill_d3()&lt;/code&gt; to add a fill theme to the plot.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;base_plot &amp;lt;- ggplot(plot_data, aes(y = month, x = year)) + 
+  geom_tile(color = &#39;white&#39;, aes(fill = era), size = 1) + 
+  scale_y_continuous(breaks = -6:18, limits = c(-6, 18)) +
+  scale_x_continuous(breaks = 1980:2020) +
+  theme(legend.position = &#39;bottom&#39;) + 
+  scale_fill_d3()
+
+base_plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Annotations have always been tricky, because we have to specifically define the coordinates of the annotations we are trying to add. I&amp;rsquo;m going to start off small with a small annotation on the top left corner with an arrow point to the top left square. The segments are created using the &lt;code&gt;geom_curve()&lt;/code&gt; and the text annotations are created using &lt;code&gt;annotate()&lt;/code&gt; via &lt;code&gt;geom_text()&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## annotate the definition of 1 square = 1 month
+plot &amp;lt;- base_plot +
+  geom_curve(
+    x = 1987,
+    y = 12,
+    xend = 1986,
+    yend = 14,
+    curvature = -.4,
+    arrow = arrow(length = unit(0.01, &amp;quot;npc&amp;quot;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) + 
+  annotate(
+    &#39;text&#39;,
+    x = 1985,
+    y = 15,
+    hjust = 0,
+    label = &#39;1 square = 1 month&#39;,
+    fontface = &#39;bold.italic&#39;
+  )
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Next I&amp;rsquo;ll start to map out exactly where I want each of the labels for the eras to be placed. This definitely took a while, and it helps if you have some forethought on where you want to place the labels.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## annotate eras with labels
+
+### set colors 
+pallete_colors &amp;lt;- pal_d3(&amp;quot;category10&amp;quot;)(10)
+
+## set size
+annotation_size &amp;lt;- 5
+
+plot &amp;lt;- plot + 
+  annotate(
+    &#39;text&#39;,
+    x = 1989,
+    y = -1,
+    label = &#39;Childhood&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[1]],
+    size = annotation_size
+  )  +
+  annotate(
+    &#39;text&#39;,
+    x = 1998,
+    y = -1,
+    label = &#39;K-12 Grade School&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[2]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2007.5,
+    y = -1,
+    label = &#39;BSc in Biological Sciences&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[3]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2011,
+    y = 14,
+    label = &#39;Pre Graduate Employment&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[4]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2013,
+    y = -3,
+    label = &#39;MPH in Biostatistics &amp;amp; Epidemiology&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[5]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2013,
+    y = 16,
+    label = &#39;Data Analyst&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[6]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2018.5,
+    y = -1,
+    label = &#39;Biostatistician&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[7]],
+    size = annotation_size
+  ) 
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we have the text placed in all the designated coordinates, we can start working on the arrows.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot &amp;lt;- plot + 
+  geom_curve(
+    x = 1989,
+    y = 1,
+    xend = 1989,
+    yend = -.5,
+    curvature = .2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 1998,
+    y = 1,
+    xend = 1998,
+    yend = -.5,
+    curvature = .2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2007,
+    y = 1,
+    xend = 2007,
+    yend = -.5,
+    curvature = -.2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2011,
+    y = 12,
+    xend = 2011,
+    yend = 13.5,
+    curvature = -.2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2015,
+    y = 12,
+    xend =  2015,
+    yend = 16,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;,
+    curvature = .5
+  ) +
+  geom_curve(
+    x = 2014,
+    y = 1,
+    xend =  2014,
+    yend = -2.5,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    curvature = -0.2,
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2018,
+    y = 1,
+    xend =  2018,
+    yend = -0.5,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    curvature = -0.2,
+    color = &#39;black&#39;
+  ) 
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an  annotations regarding each column is 1 year, and the segments to finish off the look.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## let&#39;s add a label for 1 column equals 1 year of age 
+
+plot &amp;lt;- plot + 
+  annotate(
+    &#39;text&#39;,
+    x = 1985,
+    y = 6,
+    label = &#39;1 year&#39;,
+    angle = 90,
+    size = 7,
+    fontface = &#39;bold.italic&#39;,
+    color = &#39;black&#39;
+  ) + 
+  annotate(
+    &#39;text&#39;,
+    x = 1988,
+    y = 13,
+    label = &#39;age&#39;,
+    size = 5,
+    fontface = &#39;bold.italic&#39;,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1988.75,
+    y = 13,
+    xend = 1993,
+    yend = 13,
+    arrow = arrow(ends = &#39;last&#39;, length = unit(.01, units = &#39;npc&#39;)),
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1985,
+    xend = 1985,
+    y = 8,
+    yend = 12,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1985,
+    xend = 1985,
+    y = 1,
+    yend = 4,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1984.5,
+    xend = 1985.5,
+    y = 12,
+    yend = 12,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1984.5,
+    xend = 1985.5,
+    y = 1,
+    yend = 1,
+    color = &#39;black&#39;
+  ) 
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We&amp;rsquo;re almost there - now that we have all the annotations we want on there, we can remove the legend and use a theme to further remove the grid as well as the x and y axis.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot &amp;lt;- plot +
+  theme_void() +
+  theme(
+    legend.position = &#39;none&#39;
+  )
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s finish off this off by adding a title&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## lets add a title
+plot &amp;lt;- plot + 
+  annotate(
+    &#39;text&#39;,
+    x = 1987,
+    y = -5,
+    label = &#39;My life in Months.....&#39;,
+    size = 25,
+    hjust = 0,
+    fontface = &#39;bold.italic&#39;
+  )
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Full resolution figure can be found 
+&lt;a href=&#34;https://raw.githubusercontent.com/mluu921/life_plot/master/mylifeinmonths.png&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt; along with the github repo for the full code 
+&lt;a href=&#34;https://github.com/mluu921/life_plot&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Recreating the New York Times mask utilization survey data with the R opensource Leaflet package</title>
+      <link>/post/covid19_mask_usage/</link>
+      <pubDate>Sun, 04 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/post/covid19_mask_usage/</guid>
+      <description>&lt;p&gt;We&amp;rsquo;re going to recreate the NY Times mask-use survey data using R and the leaflet open source interactive mapping package. We can start off by loading the data from the New York Times github repository found 
+&lt;a href=&#34;https://github.com/nytimes/covid-19-data/tree/master/mask-use&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;url &amp;lt;- &#39;https://raw.githubusercontent.com/nytimes/covid-19-data/master/mask-use/mask-use-by-county.csv&#39;
+
+df &amp;lt;- read_csv(url)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that we have the data loaded, lets have a look at the data to see what we&amp;rsquo;re working with&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;glimpse(df)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 3,142
+## Columns: 6
+## $ COUNTYFP   &amp;lt;chr&amp;gt; &amp;quot;01001&amp;quot;, &amp;quot;01003&amp;quot;, &amp;quot;01005&amp;quot;, &amp;quot;01007&amp;quot;, &amp;quot;01009&amp;quot;, &amp;quot;01011&amp;quot;, &amp;quot;0...
+## $ NEVER      &amp;lt;dbl&amp;gt; 0.053, 0.083, 0.067, 0.020, 0.053, 0.031, 0.102, 0.152, ...
+## $ RARELY     &amp;lt;dbl&amp;gt; 0.074, 0.059, 0.121, 0.034, 0.114, 0.040, 0.053, 0.108, ...
+## $ SOMETIMES  &amp;lt;dbl&amp;gt; 0.134, 0.098, 0.120, 0.096, 0.180, 0.144, 0.257, 0.130, ...
+## $ FREQUENTLY &amp;lt;dbl&amp;gt; 0.295, 0.323, 0.201, 0.278, 0.194, 0.286, 0.137, 0.167, ...
+## $ ALWAYS     &amp;lt;dbl&amp;gt; 0.444, 0.436, 0.491, 0.572, 0.459, 0.500, 0.451, 0.442, ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;df
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3,142 x 6
+##    COUNTYFP NEVER RARELY SOMETIMES FREQUENTLY ALWAYS
+##    &amp;lt;chr&amp;gt;    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1 01001    0.053  0.074     0.134      0.295  0.444
+##  2 01003    0.083  0.059     0.098      0.323  0.436
+##  3 01005    0.067  0.121     0.12       0.201  0.491
+##  4 01007    0.02   0.034     0.096      0.278  0.572
+##  5 01009    0.053  0.114     0.18       0.194  0.459
+##  6 01011    0.031  0.04      0.144      0.286  0.5  
+##  7 01013    0.102  0.053     0.257      0.137  0.451
+##  8 01015    0.152  0.108     0.13       0.167  0.442
+##  9 01017    0.117  0.037     0.15       0.136  0.56 
+## 10 01019    0.135  0.027     0.161      0.158  0.52 
+## # ... with 3,132 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;According to the repository, the definitions of the variables are as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;COUNTYFP&lt;/strong&gt;: The county FIPS code.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NEVER&lt;/strong&gt;: The estimated share of people in this county who would say never in response to the question “How often do you wear a mask in public when you expect to be within six feet of another person?”&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RARELY&lt;/strong&gt;: The estimated share of people in this county who would say rarely&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SOMETIMES&lt;/strong&gt;: The estimated share of people in this county who would say sometimes&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;FREQUENTLY&lt;/strong&gt;: The estimated share of people in this county who would say frequently&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ALWAYS&lt;/strong&gt;: The estimated share of people in this county who would say always&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;They are also plotting the probability of encountering a mask usage among 5 random encounters in the county.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The chance all five people are wearing masks in five random encounters is calculated by assuming that survey respondents who answered ‘Always’ were wearing masks all of the time, those who answered ‘Frequently’ were wearing masks 80 percent of the time, those who answered ‘Sometimes’ were wearing masks 50 percent of the time, those who answered ‘Rarely’ were wearing masks 20 percent of the time and those who answered ‘Never’ were wearing masks none of the time.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We can calculate this simply by using the supplied weights (1, .8, .5, .2, and 0) among ALWAYS, FREQUENTLY, SOMETIMES, RARELY, and NEVER mask usage, and taking the sum of the proportion of mask usage among all 5 different types of individuals that have equal probability of encountering.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;df &amp;lt;- df %&amp;gt;%
+  mutate(
+    prob = (ALWAYS * 1) + (FREQUENTLY * .8) + (SOMETIMES * .5) + (RARELY * .2) + (NEVER * 0)
+  )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since we have the county FIPS code data available, we&amp;rsquo;ll need to merge this data with county geojson data for the United States which I was able to obtain from 
+&lt;a href=&#34;https://eric.clst.org/tech/usgeojson/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;counties &amp;lt;- rgdal::readOGR(&#39;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## OGR data source with driver: GeoJSON 
+## Source: &amp;quot;https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_050_00_500k.json&amp;quot;, layer: &amp;quot;gz_2010_us_050_00_500k&amp;quot;
+## with 3221 features
+## It has 6 fields
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After reading in the US counties data, we can merge the mask usage survey data with the geojson file, by the state and FIPS code. We can create a COUNTYFP variable by pasting together the STATE and COUNTY code&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;counties@data &amp;lt;- counties@data %&amp;gt;%
+  mutate(
+    COUNTYFP = paste0(STATE, COUNTY)
+  ) %&amp;gt;%
+  left_join(
+    df
+  )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Furthermore after merging the data, we can create a label by merging together the % mask usage data into a HTML string&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;counties@data &amp;lt;- counties@data %&amp;gt;%
+  mutate(
+    label = glue::glue(
+      &#39;&amp;lt;h3&amp;gt;{NAME}&amp;lt;/h3&amp;gt;&amp;lt;br&amp;gt;
+      {paste0(format(round(NEVER*100, 1), 1), &amp;quot;%&amp;quot;)} estimated NEVER wear a mask &amp;lt;br&amp;gt;
+      {paste0(format(round(RARELY*100, 1), 1), &amp;quot;%&amp;quot;)} estimated RARELY wear a mask &amp;lt;br&amp;gt;
+      {paste0(format(round(SOMETIMES*100, 1), 1), &amp;quot;%&amp;quot;)} estimated SOMETIMES wear a mask &amp;lt;br&amp;gt;
+      {paste0(format(round(FREQUENTLY*100, 1), 1), &amp;quot;%&amp;quot;)} estimated FREQUENTLY wear a mask &amp;lt;br&amp;gt;
+      {paste0(format(round(ALWAYS*100, 1), 1), &amp;quot;%&amp;quot;)} estimated ALWAYS wear a mask &amp;lt;br&amp;gt;&amp;lt;br&amp;gt;
+      &amp;lt;h5&amp;gt;This translates to a &amp;lt;b&amp;gt;{paste0(format(round(prob*100, 1), 1), &amp;quot;%&amp;quot;)}&amp;lt;/b&amp;gt; chance that everyone is masked in five random encounters&amp;lt;/h5&amp;gt;&#39;
+    ),
+    label = map(label, ~ htmltools::HTML(.x))
+  )
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, let&amp;rsquo;s put this all together and create a Chloropleth map using the leaflet package&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;color_pal &amp;lt;- colorNumeric(&#39;plasma&#39;, counties$prob)
+
+map &amp;lt;- leaflet(counties) %&amp;gt;%
+  addTiles() %&amp;gt;%
+  fitBounds(lng1 = -131.519605, lng2 = -64.312607, lat1 = 50.623510, lat2 = 23.415249) %&amp;gt;%
+  addPolygons(
+    fillColor = ~ color_pal(prob),
+    fillOpacity = .75,
+    weight = 1,
+    color = &#39;white&#39;,
+    label = ~ label
+  ) %&amp;gt;%
+  addLegend(
+    position = &#39;bottomright&#39;,
+    pal = color_pal,
+    values = ~ counties$prob,
+    title = &#39;% Mask Usage&#39;,
+    labFormat = labelFormat(
+      suffix = &#39;%&#39;,
+      transform = function(x)
+        x * 100
+    )
+  )
+
+# htmlwidgets::saveWidget(map, &#39;map.html&#39;, selfcontained = T)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+&lt;a href=&#34;http://michaelluu.info/files/covid19_mask_usage/map.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;&lt;img src=&#34;leafletmap.jpg&#34; alt=&#34;&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

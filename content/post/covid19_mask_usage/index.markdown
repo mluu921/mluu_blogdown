@@ -3,8 +3,8 @@ title: "Recreating the New York Times mask utilization survey data with the R op
 author: ''
 date: '2020-10-04'
 slug: covid19_mask_usage
-categories: [rstats, leaflet]
-tags: [rstats, leaflet]
+categories: [rstats, leaflet, datavis]
+tags: [rstats, leaflet, datavis]
 subtitle: ''
 summary: "Recreating the New York Times mask utilization survey data with the R opensource Leaflet package"
 authors: []

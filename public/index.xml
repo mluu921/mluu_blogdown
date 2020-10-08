@@ -5,7 +5,7 @@
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <description>Michael Luu</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 04 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 07 Oct 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
       <title>Michael Luu</title>
@@ -51,6 +51,371 @@
 &lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
 &lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
 &lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My life in Months - Making a &#39;life plot&#39; in R using ggplot2 </title>
+      <link>/post/mylifeinplots/</link>
+      <pubDate>Wed, 07 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/post/mylifeinplots/</guid>
+      <description>&lt;p&gt;This blog post is inspired by 
+&lt;a href=&#34;https://twitter.com/sharlagelfand&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Sharla Gefland&lt;/a&gt; twitter post found 
+&lt;a href=&#34;https://twitter.com/sharlagelfand/status/1282783913002373121?s=20&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;, where she made a &amp;lsquo;My Life in Months&amp;rsquo; plot.&lt;/p&gt;
+&lt;p&gt;Annotations have always been the bane of my existence in ggplot2, and I figured this would be a fun project to get some practice. Looking at her github repo found 
+&lt;a href=&#34;https://github.com/sharlagelfand/mylifeinmonths&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;, she made this figure using the waffle plot package found 
+&lt;a href=&#34;https://cran.r-project.org/web/packages/waffle/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;. Although using the waffle package may simplify some aspects of making this figure, recreating this figure in pure ggplot2 will open up the arguments for further customization that may not be available via the waffle package.&lt;/p&gt;
+&lt;p&gt;We can start off by creating a tibble for the basis of the plot. The goal here is to create a tibble starting from the starting month (month/year) I was born, until the current month/year. I can create this with the help of the &lt;code&gt;lubridate&lt;/code&gt; package, which simplifies the handling of dates in R, and using this package to further extract the month and year information from the date sequence.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;df &amp;lt;- tibble(
+  date = seq(mdy(&#39;9/1/1987&#39;), floor_date(Sys.Date(), &#39;month&#39;), &#39;month&#39;)
+) %&amp;gt;%
+  mutate(
+    month = month(date),
+    year = year(date)
+  )
+
+df &amp;lt;- tibble(date = seq(mdy(&#39;9/1/1987&#39;), Sys.Date(), &#39;1 month&#39;)) %&amp;gt;%
+  mutate(month = month(date),
+         year = year(date))
+
+df
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 398 x 3
+##    date       month  year
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1987-09-01     9  1987
+##  2 1987-10-01    10  1987
+##  3 1987-11-01    11  1987
+##  4 1987-12-01    12  1987
+##  5 1988-01-01     1  1988
+##  6 1988-02-01     2  1988
+##  7 1988-03-01     3  1988
+##  8 1988-04-01     4  1988
+##  9 1988-05-01     5  1988
+## 10 1988-06-01     6  1988
+## # ... with 388 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Using the tibble I just created, I can further define the &amp;lsquo;eras&amp;rsquo; that I would like to highlight in the life plot.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot_data &amp;lt;- df %&amp;gt;%
+  mutate(
+    era = case_when(
+      date %in% mdy(&#39;9/1/1987&#39;):mdy(&amp;quot;9/1/1991&amp;quot;) ~ &#39;Childhood&#39;,
+      date %in% mdy(&#39;10/1/1991&#39;):mdy(&#39;6/1/2005&#39;) ~ &#39;K-12 Grade School&#39;,
+      date %in% mdy(&#39;7/1/2005&#39;):mdy(&#39;12/1/2009&#39;) ~ &#39;BSc in Biological Sciences&#39;,
+      date %in% mdy(&#39;1/1/2010&#39;):mdy(&#39;7/1/2013&#39;) ~ &#39;Pre Graduate Work&#39;,
+      date %in% mdy(&#39;8/1/2013&#39;):mdy(&#39;6/1/2015&#39;) ~ &#39;MPH in Biostatistics &amp;amp; Epidemiology&#39;,
+      date %in% mdy(&#39;7/1/2015&#39;):mdy(&#39;8/1/2016&#39;) ~ &#39;Data Analyst&#39;,
+      date %in% mdy(&#39;9/1/2016&#39;):Sys.Date() ~ &#39;Biostatistician&#39;
+    )
+  ) %&amp;gt;%
+  mutate(era = factor(
+    era,
+    levels = c(
+      &#39;Childhood&#39;,
+      &#39;K-12 Grade School&#39;,
+      &#39;BSc in Biological Sciences&#39;,
+      &#39;Pre Graduate Work&#39;,
+      &#39;MPH in Biostatistics &amp;amp; Epidemiology&#39;,
+      &#39;Data Analyst&#39;,
+      &#39;Biostatistician&#39;
+    )
+  ))
+
+plot_data
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 398 x 4
+##    date       month  year era      
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;fct&amp;gt;    
+##  1 1987-09-01     9  1987 Childhood
+##  2 1987-10-01    10  1987 Childhood
+##  3 1987-11-01    11  1987 Childhood
+##  4 1987-12-01    12  1987 Childhood
+##  5 1988-01-01     1  1988 Childhood
+##  6 1988-02-01     2  1988 Childhood
+##  7 1988-03-01     3  1988 Childhood
+##  8 1988-04-01     4  1988 Childhood
+##  9 1988-05-01     5  1988 Childhood
+## 10 1988-06-01     6  1988 Childhood
+## # ... with 388 more rows
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next, I&amp;rsquo;ll create a base plot using ggplot2, where I&amp;rsquo;ll map the x axis to &lt;code&gt;year&lt;/code&gt;, and the y axis to &lt;code&gt;month&lt;/code&gt;. I&amp;rsquo;ll also use the geom, &lt;code&gt;geom_tile()&lt;/code&gt; to create the &amp;lsquo;blocks&amp;rsquo; that we see in the life plot, where we&amp;rsquo;ll map the fill to &lt;code&gt;era&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt; ggplot(plot_data, aes(y = month, x = year)) + 
+  geom_tile(color = &#39;white&#39;, aes(fill = era), size = 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we have a simple base plot to work with, we can further customize and clean up the figure. A trick to give us a bigger &amp;lsquo;space&amp;rsquo; to work with is to expand the limits of the &lt;code&gt;y&lt;/code&gt; and &lt;code&gt;x&lt;/code&gt; axis. Furthermore, I will use &lt;code&gt;scale_fill_d3()&lt;/code&gt; to add a fill theme to the plot.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;base_plot &amp;lt;- ggplot(plot_data, aes(y = month, x = year)) + 
+  geom_tile(color = &#39;white&#39;, aes(fill = era), size = 1) + 
+  scale_y_continuous(breaks = -6:18, limits = c(-6, 18)) +
+  scale_x_continuous(breaks = 1980:2020) +
+  theme(legend.position = &#39;bottom&#39;) + 
+  scale_fill_d3()
+
+base_plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Annotations have always been tricky, because we have to specifically define the coordinates of the annotations we are trying to add. I&amp;rsquo;m going to start off small with a small annotation on the top left corner with an arrow point to the top left square. The segments are created using the &lt;code&gt;geom_curve()&lt;/code&gt; and the text annotations are created using &lt;code&gt;annotate()&lt;/code&gt; via &lt;code&gt;geom_text()&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## annotate the definition of 1 square = 1 month
+plot &amp;lt;- base_plot +
+  geom_curve(
+    x = 1987,
+    y = 12,
+    xend = 1986,
+    yend = 14,
+    curvature = -.4,
+    arrow = arrow(length = unit(0.01, &amp;quot;npc&amp;quot;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) + 
+  annotate(
+    &#39;text&#39;,
+    x = 1985,
+    y = 15,
+    hjust = 0,
+    label = &#39;1 square = 1 month&#39;,
+    fontface = &#39;bold.italic&#39;
+  )
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Next I&amp;rsquo;ll start to map out exactly where I want each of the labels for the eras to be placed. This definitely took a while, and it helps if you have some forethought on where you want to place the labels.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## annotate eras with labels
+
+### set colors 
+pallete_colors &amp;lt;- pal_d3(&amp;quot;category10&amp;quot;)(10)
+
+## set size
+annotation_size &amp;lt;- 5
+
+plot &amp;lt;- plot + 
+  annotate(
+    &#39;text&#39;,
+    x = 1989,
+    y = -1,
+    label = &#39;Childhood&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[1]],
+    size = annotation_size
+  )  +
+  annotate(
+    &#39;text&#39;,
+    x = 1998,
+    y = -1,
+    label = &#39;K-12 Grade School&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[2]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2007.5,
+    y = -1,
+    label = &#39;BSc in Biological Sciences&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[3]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2011,
+    y = 14,
+    label = &#39;Pre Graduate Employment&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[4]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2013,
+    y = -3,
+    label = &#39;MPH in Biostatistics &amp;amp; Epidemiology&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[5]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2013,
+    y = 16,
+    label = &#39;Data Analyst&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[6]],
+    size = annotation_size
+  ) +
+  annotate(
+    &#39;text&#39;,
+    x = 2018.5,
+    y = -1,
+    label = &#39;Biostatistician&#39;,
+    fontface = &#39;bold.italic&#39;,
+    color = pallete_colors[[7]],
+    size = annotation_size
+  ) 
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now that we have the text placed in all the designated coordinates, we can start working on the arrows.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot &amp;lt;- plot + 
+  geom_curve(
+    x = 1989,
+    y = 1,
+    xend = 1989,
+    yend = -.5,
+    curvature = .2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 1998,
+    y = 1,
+    xend = 1998,
+    yend = -.5,
+    curvature = .2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2007,
+    y = 1,
+    xend = 2007,
+    yend = -.5,
+    curvature = -.2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2011,
+    y = 12,
+    xend = 2011,
+    yend = 13.5,
+    curvature = -.2,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2015,
+    y = 12,
+    xend =  2015,
+    yend = 16,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    color = &#39;black&#39;,
+    curvature = .5
+  ) +
+  geom_curve(
+    x = 2014,
+    y = 1,
+    xend =  2014,
+    yend = -2.5,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    curvature = -0.2,
+    color = &#39;black&#39;
+  ) +
+  geom_curve(
+    x = 2018,
+    y = 1,
+    xend =  2018,
+    yend = -0.5,
+    arrow = arrow(length = unit(0.01, &#39;npc&#39;), ends = &#39;first&#39;),
+    curvature = -0.2,
+    color = &#39;black&#39;
+  ) 
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an  annotations regarding each column is 1 year, and the segments to finish off the look.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## let&#39;s add a label for 1 column equals 1 year of age 
+
+plot &amp;lt;- plot + 
+  annotate(
+    &#39;text&#39;,
+    x = 1985,
+    y = 6,
+    label = &#39;1 year&#39;,
+    angle = 90,
+    size = 7,
+    fontface = &#39;bold.italic&#39;,
+    color = &#39;black&#39;
+  ) + 
+  annotate(
+    &#39;text&#39;,
+    x = 1988,
+    y = 13,
+    label = &#39;age&#39;,
+    size = 5,
+    fontface = &#39;bold.italic&#39;,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1988.75,
+    y = 13,
+    xend = 1993,
+    yend = 13,
+    arrow = arrow(ends = &#39;last&#39;, length = unit(.01, units = &#39;npc&#39;)),
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1985,
+    xend = 1985,
+    y = 8,
+    yend = 12,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1985,
+    xend = 1985,
+    y = 1,
+    yend = 4,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1984.5,
+    xend = 1985.5,
+    y = 12,
+    yend = 12,
+    color = &#39;black&#39;
+  ) +
+  geom_segment(
+    x = 1984.5,
+    xend = 1985.5,
+    y = 1,
+    yend = 1,
+    color = &#39;black&#39;
+  ) 
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We&amp;rsquo;re almost there - now that we have all the annotations we want on there, we can remove the legend and use a theme to further remove the grid as well as the x and y axis.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot &amp;lt;- plot +
+  theme_void() +
+  theme(
+    legend.position = &#39;none&#39;
+  )
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s finish off this off by adding a title&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;## lets add a title
+plot &amp;lt;- plot + 
+  annotate(
+    &#39;text&#39;,
+    x = 1987,
+    y = -5,
+    label = &#39;My life in Months.....&#39;,
+    size = 25,
+    hjust = 0,
+    fontface = &#39;bold.italic&#39;
+  )
+
+plot
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;1440&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Full resolution figure can be found 
+&lt;a href=&#34;https://raw.githubusercontent.com/mluu921/life_plot/master/mylifeinmonths.png&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt; along with the github repo for the full code 
+&lt;a href=&#34;https://github.com/mluu921/life_plot&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
