@@ -20,12 +20,14 @@ projects: []
 
 ```{r setup, include=F}
 knitr::opts_chunk$set(echo = T, warning = F, message = F,
-                      fig.align = 'center', fig.height = 7, fig.width = 15)
+                      fig.align = 'center', fig.height = 7, fig.width = 12)
 
 library(tidyverse)
 library(lubridate)
 library(ggsci)
+library(extrafont)
 
+loadfonts(device = 'win')
 ```
 
 This blog post is inspired by [Sharla Gefland](https://twitter.com/sharlagelfand) twitter post found [here](https://twitter.com/sharlagelfand/status/1282783913002373121?s=20), where she made a 'My Life in Months' plot. 
@@ -96,8 +98,10 @@ base_plot <- ggplot(plot_data, aes(y = month, x = year)) +
   geom_tile(color = 'white', aes(fill = era), size = 1) + 
   scale_y_continuous(breaks = -6:18, limits = c(-6, 18)) +
   scale_x_continuous(breaks = 1980:2020) +
+  labs(y = 'Month', x = 'Year') + 
   theme(legend.position = 'bottom') + 
   scale_fill_d3()
+  
 
 base_plot
 ```
@@ -122,7 +126,7 @@ plot <- base_plot +
     y = 15,
     hjust = 0,
     label = '1 square = 1 month',
-    fontface = 'bold.italic'
+    family = "Segoe Script"
   )
 
 plot
@@ -131,8 +135,6 @@ plot
 Next I'll start to map out exactly where I want each of the labels for the eras to be placed. This definitely took a while, and it helps if you have some forethought on where you want to place the labels.
 
 ```{r}
-## annotate eras with labels
-
 ### set colors 
 pallete_colors <- pal_d3("category10")(10)
 
@@ -145,63 +147,63 @@ plot <- plot +
     x = 1989,
     y = -1,
     label = 'Childhood',
-    fontface = 'bold.italic',
     color = pallete_colors[[1]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   )  +
   annotate(
     'text',
     x = 1998,
     y = -1,
     label = 'K-12 Grade School',
-    fontface = 'bold.italic',
     color = pallete_colors[[2]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2007.5,
     y = -1,
     label = 'BSc in Biological Sciences',
-    fontface = 'bold.italic',
     color = pallete_colors[[3]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2011,
     y = 14,
     label = 'Pre Graduate Employment',
-    fontface = 'bold.italic',
     color = pallete_colors[[4]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2013,
     y = -3,
     label = 'MPH in Biostatistics & Epidemiology',
-    fontface = 'bold.italic',
     color = pallete_colors[[5]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
-    x = 2013,
+    x = 2012.5,
     y = 16,
     label = 'Data Analyst',
-    fontface = 'bold.italic',
     color = pallete_colors[[6]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2018.5,
     y = -1,
     label = 'Biostatistician',
-    fontface = 'bold.italic',
     color = pallete_colors[[7]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) 
 
 plot
@@ -211,6 +213,8 @@ plot
 Now that we have the text placed in all the designated coordinates, we can start working on the arrows.
 
 ```{r}
+## add additional curve segments for labels
+
 plot <- plot + 
   geom_curve(
     x = 1989,
@@ -255,7 +259,7 @@ plot <- plot +
     yend = 16,
     arrow = arrow(length = unit(0.01, 'npc'), ends = 'first'),
     color = 'black',
-    curvature = .5
+    curvature = .8
   ) +
   geom_curve(
     x = 2014,
@@ -278,7 +282,8 @@ plot <- plot +
 
 plot
 ```
-Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an  annotations regarding each column is 1 year, and the segments to finish off the look. 
+
+Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an annotations regarding each column is 1 year, and the segments to finish off the look. 
 
 ```{r}
 ## let's add a label for 1 column equals 1 year of age 
@@ -291,8 +296,8 @@ plot <- plot +
     label = '1 year',
     angle = 90,
     size = 7,
-    fontface = 'bold.italic',
-    color = 'black'
+    color = 'black',
+    family = "Segoe Script"
   ) + 
   annotate(
     'text',
@@ -300,8 +305,8 @@ plot <- plot +
     y = 13,
     label = 'age',
     size = 5,
-    fontface = 'bold.italic',
-    color = 'black'
+    color = 'black',
+    family = "Segoe Script"
   ) +
   geom_segment(
     x = 1988.75,
@@ -364,7 +369,7 @@ plot <- plot +
     'text',
     x = 1987,
     y = -5,
-    label = 'My life in Months.....',
+    label = 'Michael Luu',
     size = 25,
     hjust = 0,
     fontface = 'bold.italic'

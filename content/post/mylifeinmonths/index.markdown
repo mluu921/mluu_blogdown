@@ -117,7 +117,7 @@ Next, I'll create a base plot using ggplot2, where I'll map the x axis to `year`
   geom_tile(color = 'white', aes(fill = era), size = 1)
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-3-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" />
 
 Now that we have a simple base plot to work with, we can further customize and clean up the figure. A trick to give us a bigger 'space' to work with is to expand the limits of the `y` and `x` axis. Furthermore, I will use `scale_fill_d3()` to add a fill theme to the plot.
 
@@ -127,13 +127,15 @@ base_plot <- ggplot(plot_data, aes(y = month, x = year)) +
   geom_tile(color = 'white', aes(fill = era), size = 1) + 
   scale_y_continuous(breaks = -6:18, limits = c(-6, 18)) +
   scale_x_continuous(breaks = 1980:2020) +
+  labs(y = 'Month', x = 'Year') + 
   theme(legend.position = 'bottom') + 
   scale_fill_d3()
+  
 
 base_plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-4-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" />
 
 Annotations have always been tricky, because we have to specifically define the coordinates of the annotations we are trying to add. I'm going to start off small with a small annotation on the top left corner with an arrow point to the top left square. The segments are created using the `geom_curve()` and the text annotations are created using `annotate()` via `geom_text()`
 
@@ -156,20 +158,18 @@ plot <- base_plot +
     y = 15,
     hjust = 0,
     label = '1 square = 1 month',
-    fontface = 'bold.italic'
+    family = "Segoe Script"
   )
 
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-5-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" />
 
 Next I'll start to map out exactly where I want each of the labels for the eras to be placed. This definitely took a while, and it helps if you have some forethought on where you want to place the labels.
 
 
 ```r
-## annotate eras with labels
-
 ### set colors 
 pallete_colors <- pal_d3("category10")(10)
 
@@ -182,74 +182,76 @@ plot <- plot +
     x = 1989,
     y = -1,
     label = 'Childhood',
-    fontface = 'bold.italic',
     color = pallete_colors[[1]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   )  +
   annotate(
     'text',
     x = 1998,
     y = -1,
     label = 'K-12 Grade School',
-    fontface = 'bold.italic',
     color = pallete_colors[[2]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2007.5,
     y = -1,
     label = 'BSc in Biological Sciences',
-    fontface = 'bold.italic',
     color = pallete_colors[[3]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2011,
     y = 14,
     label = 'Pre Graduate Employment',
-    fontface = 'bold.italic',
     color = pallete_colors[[4]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2013,
     y = -3,
     label = 'MPH in Biostatistics & Epidemiology',
-    fontface = 'bold.italic',
     color = pallete_colors[[5]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
-    x = 2013,
+    x = 2012.5,
     y = 16,
     label = 'Data Analyst',
-    fontface = 'bold.italic',
     color = pallete_colors[[6]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) +
   annotate(
     'text',
     x = 2018.5,
     y = -1,
     label = 'Biostatistician',
-    fontface = 'bold.italic',
     color = pallete_colors[[7]],
-    size = annotation_size
+    size = annotation_size,
+    family = "Segoe Script"
   ) 
 
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-6-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" />
 
 Now that we have the text placed in all the designated coordinates, we can start working on the arrows.
 
 
 ```r
+## add additional curve segments for labels
+
 plot <- plot + 
   geom_curve(
     x = 1989,
@@ -294,7 +296,7 @@ plot <- plot +
     yend = 16,
     arrow = arrow(length = unit(0.01, 'npc'), ends = 'first'),
     color = 'black',
-    curvature = .5
+    curvature = .8
   ) +
   geom_curve(
     x = 2014,
@@ -318,8 +320,9 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-7-1.png" width="1440" style="display: block; margin: auto;" />
-Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an  annotations regarding each column is 1 year, and the segments to finish off the look. 
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" />
+
+Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an annotations regarding each column is 1 year, and the segments to finish off the look. 
 
 
 ```r
@@ -333,8 +336,8 @@ plot <- plot +
     label = '1 year',
     angle = 90,
     size = 7,
-    fontface = 'bold.italic',
-    color = 'black'
+    color = 'black',
+    family = "Segoe Script"
   ) + 
   annotate(
     'text',
@@ -342,8 +345,8 @@ plot <- plot +
     y = 13,
     label = 'age',
     size = 5,
-    fontface = 'bold.italic',
-    color = 'black'
+    color = 'black',
+    family = "Segoe Script"
   ) +
   geom_segment(
     x = 1988.75,
@@ -385,7 +388,7 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-8-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;" />
 
 We're almost there - now that we have all the annotations we want on there, we can remove the legend and use a theme to further remove the grid as well as the x and y axis.
 
@@ -400,7 +403,7 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-9-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" />
 
 Let's finish off this off by adding a title
 
@@ -412,7 +415,7 @@ plot <- plot +
     'text',
     x = 1987,
     y = -5,
-    label = 'My life in Months.....',
+    label = 'Michael Luu',
     size = 25,
     hjust = 0,
     fontface = 'bold.italic'
@@ -421,6 +424,6 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-10-1.png" width="1440" style="display: block; margin: auto;" />
+<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" />
 
 Full resolution figure can be found [here](https://raw.githubusercontent.com/mluu921/life_plot/master/mylifeinmonths.png) along with the github repo for the full code [here](https://github.com/mluu921/life_plot)
