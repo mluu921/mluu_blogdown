@@ -94,13 +94,13 @@ Furthermore after merging the data, we can create a label by merging together th
 counties@data <- counties@data %>%
   mutate(
     label = glue::glue(
-      '<h3>{NAME}</h3><br>
+      '<b>{NAME}</b><br>
       {paste0(format(round(NEVER*100, 1), 1), "%")} estimated NEVER wear a mask <br>
       {paste0(format(round(RARELY*100, 1), 1), "%")} estimated RARELY wear a mask <br>
       {paste0(format(round(SOMETIMES*100, 1), 1), "%")} estimated SOMETIMES wear a mask <br>
       {paste0(format(round(FREQUENTLY*100, 1), 1), "%")} estimated FREQUENTLY wear a mask <br>
       {paste0(format(round(ALWAYS*100, 1), 1), "%")} estimated ALWAYS wear a mask <br><br>
-      <h5>This translates to a <b>{paste0(format(round(prob*100, 1), 1), "%")}</b> chance that everyone is masked in five random encounters</h5>'
+      This translates to a <b>{paste0(format(round(prob*100, 1), 1), "%")}</b> chance that everyone is masked in five random encounters'
     ),
     label = map(label, ~ htmltools::HTML(.x))
   )
@@ -114,13 +114,23 @@ color_pal <- colorNumeric('plasma', counties$prob)
 
 map <- leaflet(counties) %>%
   addTiles() %>%
-  fitBounds(lng1 = -131.519605, lng2 = -64.312607, lat1 = 50.623510, lat2 = 23.415249) %>%
+  fitBounds(
+    lng1 = -131.519605,
+    lng2 = -64.312607,
+    lat1 = 50.623510,
+    lat2 = 23.415249
+  ) %>%
   addPolygons(
     fillColor = ~ color_pal(prob),
     fillOpacity = .75,
     weight = 1,
     color = 'white',
-    label = ~ label
+    label = ~ label,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "15px",
+      direction = "auto"
+    )
   ) %>%
   addLegend(
     position = 'bottomright',
@@ -136,9 +146,15 @@ map <- leaflet(counties) %>%
 
 map
 
+
 ```
 
+```{r, eval = F}
 
+# htmlwidgets::saveWidget(map, 'map.html')
+```
+
+You can also view a full page rendered version [here](https://michaelluu.info/files/covid19_mask_usage/map.html)
 
 
 
