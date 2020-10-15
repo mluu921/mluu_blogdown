@@ -37,13 +37,15 @@ experience:
     * Teaching assistant to the biostatistics course for the biomedical sciences PhD program.
   location: Los Angeles, CA
   title: Research Biostatistician II
+  
 - company: Children's Hospital Los Angles, Anesthesia Critical Care Medicine
   company_url: ""
   date_end: "2016-11-01"
   date_start: "2016-03-01"
 #  description: Taught electronic engineering and researched semiconductor physics.
   location: Los Angeles, CA
-  title: Quality Improvement Analyst
+  title: Research Biostatistician I
+  
 - company: Children's Hospital Los Angles, Neonatology
   company_url: ""
   date_end: "2016-11-01"
@@ -51,4 +53,5 @@ experience:
 #  description: Taught electronic engineering and researched semiconductor physics.
   location: Los Angeles, CA
   title: Quality Improvement Analyst
+  
 ---

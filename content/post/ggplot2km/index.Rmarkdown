@@ -189,7 +189,7 @@ km <- (p / t) + plot_layout(height = c(1, .25))
 km
 ```
 
-Now we have the final figure! I hope this post was informative in the possibilities with ggplot2. The benefits of making this figure from scratch as opposed to the packages available are the ability to further customize the figure to meet your needs that might not be available.
+Now we have the final figure! I hope this post was informative in the possibilities with ggplot2. The benefits of making this figure from scratch as opposed to the packages available are the ability to further customize the figure to meet your needs.
 
 ```{r, include = F}
 ggsave('featured.jpg', height = 6, width = 6, dpi = 1200)

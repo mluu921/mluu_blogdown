@@ -43,7 +43,7 @@ experience:
   date_start: "2016-03-01"
 #  description: Taught electronic engineering and researched semiconductor physics.
   location: Los Angeles, CA
-  title: Quality Improvement Analyst
+  title: Research Biostatistician II
 - company: Children's Hospital Los Angles, Neonatology
   company_url: ""
   date_end: "2016-11-01"
@@ -51,4 +51,5 @@ experience:
 #  description: Taught electronic engineering and researched semiconductor physics.
   location: Los Angeles, CA
   title: Quality Improvement Analyst
+  
 ---

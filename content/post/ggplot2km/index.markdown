@@ -359,7 +359,7 @@ km
 
 <img src="index_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;" />
 
-Now we have the final figure! I hope this post was informative in the possibilities with ggplot2. The benefits of making this figure from scratch as opposed to the packages available are the ability to further customize the figure to meet your needs that might not be available.
+Now we have the final figure! I hope this post was informative in the possibilities with ggplot2. The benefits of making this figure from scratch as opposed to the packages available are the ability to further customize the figure to meet your needs.
 
 
 
