@@ -16,6 +16,8 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -211,7 +213,7 @@ The base R plotting method provides us with a basic KM figure. We can generate t
 plot(fit)
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-3-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-3-1.png" width="576" style="display: block; margin: auto;" />
 
 The `GGally` package also includes `ggsurv()` which actually uses the `ggplot2` in the backend to construct the figure.
 
@@ -220,7 +222,7 @@ The `GGally` package also includes `ggsurv()` which actually uses the `ggplot2` 
 GGally::ggsurv(fit)
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-4-1.png" width="576" style="display: block; margin: auto;" />
 
 An even further improved KM figure comes from the `survminer` package that includes a 'Number at risk' table that is commonly show in combination with the KM figure.
 
@@ -229,7 +231,7 @@ An even further improved KM figure comes from the `survminer` package that inclu
 survminer::ggsurvplot(fit, data = df, risk.table = T)
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-5-1.png" width="576" style="display: block; margin: auto;" />
 
 The KM figure I'm constructing is going to be based on the `survminer` figure, that includes the secondary 'Number at risk' table. 
 
@@ -259,7 +261,7 @@ p <- ggplot(plot_data, aes(x = time, y = estimate, color = strata))
 p
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-7-1.png" width="576" style="display: block; margin: auto;" />
 
 The primary geom in building the figure is `geom_step()`
 
@@ -270,7 +272,7 @@ p <- p + geom_step(aes(linetype = strata), size = 1)
 p
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-8-1.png" width="576" style="display: block; margin: auto;" />
 
 This is pretty close to the plot that is provided from the `GGally` package already, we just need a few more steps to further clean up the axes, adjust the aesthetics, and to add a theme. I also further expanded the x axes to 550 to provide some additional room for curve annotations.
 
@@ -290,7 +292,7 @@ p <- p +
 p
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-9-1.png" width="576" style="display: block; margin: auto;" />
 
 We can further supplement this figure by adding markers on the curves using the `ggrepel` package. The simplest method I found to identify the coordinates of the ideal location of the annotations is by taking the last point of the curves by strata. Then we can use the `geom_text_repel()` function to add the text label to the curves accordingly. Now that we have the annotations on the figure, we can remove the legends to give the actual figure some additional room.
 
@@ -298,7 +300,7 @@ We can further supplement this figure by adding markers on the curves using the 
 ```r
 annotate_data <- plot_data %>%
   group_by(strata) %>%
-  slice_tail(1)
+  slice_tail(n = 1)
 
 p <- p + 
   ggrepel::geom_text_repel(data = annotate_data, aes(x = time, y = estimate, label = strata),
@@ -308,7 +310,7 @@ p <- p +
 p
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-10-1.png" width="576" style="display: block; margin: auto;" />
 
 Next, we can construct the 'At risk' table below the figure we just constructed. The table is actually a ggplot, where we are constructing a table of number of at risk plotted by `time` on the x axis and `strata` on the y axis. Since the time interval for the KM figure is per every 50 days, we will extract the 'At risk' data similarly on a per 100 days basis. The most important concept to remember is to make the scale of the x axis `scale_x_continuous()` is identical to the KM figure to have the alignment match between the two. The number at risk is then plotted using `geom_text()` with `n.risk` as the label.
 
@@ -326,7 +328,7 @@ t <- ggplot(table_data, aes(y = fct_rev(strata), x = time)) +
 t
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-11-1.png" width="576" style="display: block; margin: auto;" />
 
 Now that we have a basis of the plot for the table, we can further customize it by adding a theme, and then further clean up the axes and the labels of the figure.
 
@@ -342,7 +344,7 @@ t <- t +
 t
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-12-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-12-1.png" width="576" style="display: block; margin: auto;" />
 
 We now have 2 ggplot objects, `p` and `t`. The `patchwork` package is the 'glue' we need to put the two plots together. 
 
@@ -355,9 +357,9 @@ km <- (p / t) + plot_layout(height = c(1, .25))
 km
 ```
 
-<img src="/post/ggplot2km/index_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;" />
 
-There you have it - a publication quality KM figure ready for submission.
+Now we have the final figure! I hope this post was informative in the possibilities with ggplot2. The benefits of making this figure from scratch as opposed to the packages available are the ability to further customize the figure to meet your needs that might not be available.
 
 
 

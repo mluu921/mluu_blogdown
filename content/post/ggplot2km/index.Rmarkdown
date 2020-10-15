@@ -16,6 +16,8 @@ image:
   focal_point: ''
   preview_only: no
 projects: []
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -138,7 +140,7 @@ We can further supplement this figure by adding markers on the curves using the 
 ```{r}
 annotate_data <- plot_data %>%
   group_by(strata) %>%
-  slice_tail(1)
+  slice_tail(n = 1)
 
 p <- p + 
   ggrepel::geom_text_repel(data = annotate_data, aes(x = time, y = estimate, label = strata),
@@ -187,7 +189,7 @@ km <- (p / t) + plot_layout(height = c(1, .25))
 km
 ```
 
-There you have it - a publication quality KM figure ready for submission.
+Now we have the final figure! I hope this post was informative in the possibilities with ggplot2. The benefits of making this figure from scratch as opposed to the packages available are the ability to further customize the figure to meet your needs that might not be available.
 
 ```{r, include = F}
 ggsave('featured.jpg', height = 6, width = 6, dpi = 1200)

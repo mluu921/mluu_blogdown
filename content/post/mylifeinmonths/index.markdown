@@ -6,7 +6,7 @@ slug: mylifeinplots
 categories: [rstats, ggplot2, datavis]
 tags: [rstats, ggplot2, datavis]
 subtitle: ''
-summary: "Making a life plot in R using ggplot2"
+summary: "This blog post is inspired by [Sharla Gefland](https://twitter.com/sharlagelfand) twitter post found [here](https://twitter.com/sharlagelfand/status/1282783913002373121?s=20), where she made a 'My Life in Months' plot. "
 authors: []
 # lastmod: '2020-09-28T20:32:33-07:00'
 reading_time: false  # Show estimated reading time?
@@ -117,7 +117,7 @@ Next, I'll create a base plot using ggplot2, where I'll map the x axis to `year`
   geom_tile(color = 'white', aes(fill = era), size = 1)
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" />
 
 Now that we have a simple base plot to work with, we can further customize and clean up the figure. A trick to give us a bigger 'space' to work with is to expand the limits of the `y` and `x` axis. Furthermore, I will use `scale_fill_d3()` to add a fill theme to the plot.
 
@@ -135,7 +135,7 @@ base_plot <- ggplot(plot_data, aes(y = month, x = year)) +
 base_plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" />
 
 Annotations have always been tricky, because we have to specifically define the coordinates of the annotations we are trying to add. I'm going to start off small with a small annotation on the top left corner with an arrow point to the top left square. The segments are created using the `geom_curve()` and the text annotations are created using `annotate()` via `geom_text()`
 
@@ -164,7 +164,7 @@ plot <- base_plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" />
 
 Next I'll start to map out exactly where I want each of the labels for the eras to be placed. This definitely took a while, and it helps if you have some forethought on where you want to place the labels.
 
@@ -244,7 +244,7 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" />
 
 Now that we have the text placed in all the designated coordinates, we can start working on the arrows.
 
@@ -320,7 +320,7 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" />
 
 Now that we have most of the annotations on there, we can add some supplemental annotations, e.g. adding an annotations regarding each column is 1 year, and the segments to finish off the look. 
 
@@ -388,7 +388,7 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;" />
 
 We're almost there - now that we have all the annotations we want on there, we can remove the legend and use a theme to further remove the grid as well as the x and y axis.
 
@@ -403,7 +403,7 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" />
 
 Let's finish off this off by adding a title
 
@@ -424,6 +424,9 @@ plot <- plot +
 plot
 ```
 
-<img src="/post/mylifeinmonths/index_files/figure-html/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" />
+<img src="index_files/figure-html/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" />
+
+
+
 
 Full resolution figure can be found [here](https://raw.githubusercontent.com/mluu921/life_plot/master/mylifeinmonths.png) along with the github repo for the full code [here](https://github.com/mluu921/life_plot)

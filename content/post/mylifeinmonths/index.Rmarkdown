@@ -6,7 +6,7 @@ slug: mylifeinplots
 categories: [rstats, ggplot2, datavis]
 tags: [rstats, ggplot2, datavis]
 subtitle: ''
-summary: "Making a life plot in R using ggplot2"
+summary: "This blog post is inspired by [Sharla Gefland](https://twitter.com/sharlagelfand) twitter post found [here](https://twitter.com/sharlagelfand/status/1282783913002373121?s=20), where she made a 'My Life in Months' plot. "
 authors: []
 # lastmod: '2020-09-28T20:32:33-07:00'
 reading_time: false  # Show estimated reading time?
@@ -378,5 +378,10 @@ plot <- plot +
 plot
 
 ```
+
+```{r, include = F}
+ggsave('featured.jpg', plot, height = 7, width = 12)
+```
+
 
 Full resolution figure can be found [here](https://raw.githubusercontent.com/mluu921/life_plot/master/mylifeinmonths.png) along with the github repo for the full code [here](https://github.com/mluu921/life_plot)
